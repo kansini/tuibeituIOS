@@ -331,7 +331,7 @@ struct PoemCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.systemBackground))
         .cornerRadius(12)
-        .shadow(radius: 2)
+        .shadow(color: Color(hex: "#08000000"), radius: 16,x: 8,y:8)
     }
     
     // 从中文数字获取阿拉伯数字
