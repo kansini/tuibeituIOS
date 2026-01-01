@@ -58,7 +58,7 @@ struct HomeView: View {
                                     .padding(.horizontal)
                             }
                         }
-                        .padding(.vertical)
+                        
                     }
                     .background(Color(hex: "#EEDAB9"))  // 设置页面背景色
                 }
@@ -237,6 +237,7 @@ struct ImageView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: .infinity, maxHeight: 264)
                     .clipped()
+                    .padding(.vertical, 16) // 添加上下padding 16
                     .background(Color(hex: "#F5F2E9"))
             )
         } else {
@@ -275,10 +276,12 @@ struct PoemCardView: View {
                 imageName: "figure\(getNumberFromSn(item.title.sn))",
                 figureNumber: getNumberFromSn(item.title.sn)
             )
-            .frame(height: 264)  // 修改为264高度
+            .frame(height: 264)
             .clipped()
             .padding(.horizontal, -16) // 扩展到边缘
-            .padding(.top, -16) // 与顶部对齐
+            .padding(.top, -32) // 与顶部对齐
+            .padding(.vertical, 16) // 添加上下padding 16
+        
             
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
