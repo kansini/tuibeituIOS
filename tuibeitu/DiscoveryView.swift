@@ -32,3 +32,6 @@ struct DiscoveryView: View {
 
     }
 
+#Preview {
+    DiscoveryView()
+}

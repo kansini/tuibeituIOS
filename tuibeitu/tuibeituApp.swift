@@ -35,8 +35,7 @@ struct MainTabView: View {
     var body: some View {
         TabView {
             NavigationView {
-                ContentView()
-                    .navigationTitle("首页")
+                HomeView()
             }
             .tabItem {
                 Image(systemName: "house")
@@ -44,21 +43,25 @@ struct MainTabView: View {
             }
             NavigationView {
                 DiscoveryView()
-                    .navigationTitle("发现")
+                    
             }
             .tabItem {
-                Image(systemName: "discover")
+                Image(systemName: "globe")
                 Text("发现")
             }
             
             NavigationView {
                 SettingsView()
-                    .navigationTitle("我的")
+                  
             }
             .tabItem {
-                Image(systemName: "gear")
+                Image(systemName: "person.circle")
                 Text("我的")
             }
         }
     }
+}
+
+#Preview {
+    MainTabView()
 }
