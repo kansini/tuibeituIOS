@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct HomeView: View {
     @State private var poemItems: [PoemItem] = []
@@ -59,9 +60,10 @@ struct HomeView: View {
                         }
                         .padding(.vertical)
                     }
+                    .background(Color(hex: "#EEDAB9"))  // 设置页面背景色
                 }
             }
-            .navigationTitle("首页")
+    
         }
         .onAppear {
             loadPoemData()
@@ -192,57 +194,237 @@ struct HomeView: View {
     ]
 }
 
+// 改进的图像视图 - 专门用于加载PNG图片
+struct ImageView: View {
+    let imageName: String
+    let figureNumber: Int
+    
+    @State private var imageNotFound = false
+    @State private var shouldShowPlaceholder = true
+    
+    var body: some View {
+        Group {
+            if shouldShowPlaceholder {
+                placeholderView()
+            } else {
+                imageFromBundle()
+            }
+        }
+        .onAppear {
+            loadImage()
+        }
+    }
+    
+    private func loadImage() {
+        // 检查图片是否存在于bundle中
+        if UIImage(named: imageName) != nil {
+            // 图片存在，显示图片
+            DispatchQueue.main.async {
+                shouldShowPlaceholder = false
+            }
+        } else {
+            // 图片不存在，保持占位符
+            print("找不到图片: \(imageName)")
+        }
+    }
+    
+    private func imageFromBundle() -> some View {
+        // 加载bundle中的图片
+        if let uiImage = UIImage(named: imageName) {
+            return AnyView(
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity, maxHeight: 264)
+                    .clipped()
+                    .background(Color(hex: "#F5F2E9"))
+            )
+        } else {
+            // 如果图片不存在，返回占位符
+            return AnyView(placeholderView())
+        }
+    }
+    
+    private func placeholderView() -> some View {
+        ZStack {
+            Rectangle()
+                .fill(Color(hex: "#F5F2E9"))  // 使用新背景色
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                )
+            
+            VStack {
+                Image(systemName: "photo.on.rectangle")
+                    .font(.title)
+                    .foregroundColor(.secondary)
+                Text("图\(figureNumber)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+}
+
 struct PoemCardView: View {
     let item: PoemItem
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("第\(item.title.sn)象")
-                    .font(.headline)
-                    .fontWeight(.bold)
-                Spacer()
-                Text(item.title.ganZhi)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
+            // 显示对应图片
+            ImageView(
+                imageName: "figure\(getNumberFromSn(item.title.sn))",
+                figureNumber: getNumberFromSn(item.title.sn)
+            )
+            .frame(height: 264)  // 修改为264高度
+            .clipped()
+            .padding(.horizontal, -16) // 扩展到边缘
+            .padding(.top, -16) // 与顶部对齐
             
-            Text("卦辞: \(item.title.hexagrams2) (\(item.title.hexagrams1))")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            // 预测内容
-            ForEach(0..<item.poem.predict.count, id: \.self) { i in
-                VStack(alignment: .leading, spacing: 4) {
-                    ForEach(item.poem.predict[i], id: \.self) { line in
-                        Text(line)
-                            .font(.body)
-                            .multilineTextAlignment(.leading)
-                    }
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("第\(item.title.sn)象")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                    Spacer()
+                    Text(item.title.ganZhi)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                 }
-            }
-            
-            // 描述内容
-            if !item.poem.description.isEmpty {
-                Divider()
                 
-                ForEach(0..<item.poem.description.count, id: \.self) { i in
+                Text("卦辞: \(item.title.hexagrams2) (\(item.title.hexagrams1))")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                // 预测内容
+                ForEach(0..<item.poem.predict.count, id: \.self) { i in
                     VStack(alignment: .leading, spacing: 4) {
-                        ForEach(item.poem.description[i], id: \.self) { line in
+                        ForEach(item.poem.predict[i], id: \.self) { line in
                             Text(line)
                                 .font(.body)
-                                .foregroundColor(.secondary)
                                 .multilineTextAlignment(.leading)
                         }
                     }
                 }
+                
+                // 描述内容
+                if !item.poem.description.isEmpty {
+                    Divider()
+                    
+                    ForEach(0..<item.poem.description.count, id: \.self) { i in
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(item.poem.description[i], id: \.self) { line in
+                                Text(line)
+                                    .font(.body)
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.leading)
+                            }
+                        }
+                    }
+                }
             }
+            .padding(.top, 8)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(radius: 2)
+    }
+    
+    // 从中文数字获取阿拉伯数字
+    private func getNumberFromSn(_ sn: String) -> Int {
+        // 创建映射字典
+        var numberMap: [String: Int] = [:]
+        numberMap["一"] = 1
+        numberMap["二"] = 2
+        numberMap["三"] = 3
+        numberMap["四"] = 4
+        numberMap["五"] = 5
+        numberMap["六"] = 6
+        numberMap["七"] = 7
+        numberMap["八"] = 8
+        numberMap["九"] = 9
+        numberMap["十"] = 10
+        numberMap["十一"] = 11
+        numberMap["十二"] = 12
+        numberMap["十三"] = 13
+        numberMap["十四"] = 14
+        numberMap["十五"] = 15
+        numberMap["十六"] = 16
+        numberMap["十七"] = 17
+        numberMap["十八"] = 18
+        numberMap["十九"] = 19
+        numberMap["二十"] = 20
+        numberMap["二一"] = 21
+        numberMap["二二"] = 22
+        numberMap["二三"] = 23
+        numberMap["二四"] = 24
+        numberMap["二五"] = 25
+        numberMap["二六"] = 26
+        numberMap["二七"] = 27
+        numberMap["二八"] = 28
+        numberMap["二九"] = 29
+        numberMap["三十"] = 30
+        numberMap["三一"] = 31
+        numberMap["三二"] = 32
+        numberMap["三三"] = 33
+        numberMap["三四"] = 34
+        numberMap["三五"] = 35
+        numberMap["三六"] = 36
+        numberMap["三七"] = 37
+        numberMap["三八"] = 38
+        numberMap["三九"] = 39
+        numberMap["四十"] = 40
+        numberMap["四一"] = 41
+        numberMap["四二"] = 42
+        numberMap["四三"] = 43
+        numberMap["四四"] = 44
+        numberMap["四五"] = 45
+        numberMap["四六"] = 46
+        numberMap["四七"] = 47
+        numberMap["四八"] = 48
+        numberMap["四九"] = 49
+        numberMap["五十"] = 50
+        numberMap["五一"] = 51
+        numberMap["五二"] = 52
+        numberMap["五三"] = 53
+        numberMap["五四"] = 54
+        numberMap["五五"] = 55
+        numberMap["五六"] = 56
+        numberMap["五七"] = 57
+        numberMap["五八"] = 58
+        numberMap["五九"] = 59
+        numberMap["六十"] = 60
+        
+        return numberMap[sn] ?? 1
+    }
+}
+
+// 扩展Color以支持十六进制颜色值
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
+
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
 }
 
