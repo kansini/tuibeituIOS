@@ -25,8 +25,40 @@ struct tuibeituApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
+                .modelContainer(sharedModelContainer)
         }
-        .modelContainer(sharedModelContainer)
+    }
+}
+
+struct MainTabView: View {
+    var body: some View {
+        TabView {
+            NavigationView {
+                ContentView()
+                    .navigationTitle("首页")
+            }
+            .tabItem {
+                Image(systemName: "house")
+                Text("首页")
+            }
+            NavigationView {
+                DiscoveryView()
+                    .navigationTitle("发现")
+            }
+            .tabItem {
+                Image(systemName: "discover")
+                Text("发现")
+            }
+            
+            NavigationView {
+                SettingsView()
+                    .navigationTitle("我的")
+            }
+            .tabItem {
+                Image(systemName: "gear")
+                Text("我的")
+            }
+        }
     }
 }
