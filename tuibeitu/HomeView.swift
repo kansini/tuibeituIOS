@@ -281,7 +281,6 @@ struct PoemCardView: View {
             .padding(.horizontal, -16) // 扩展到边缘
             .padding(.top, -32) // 与顶部对齐
             .padding(.vertical, 16) // 添加上下padding 16
-        
             
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
@@ -331,7 +330,7 @@ struct PoemCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.systemBackground))
         .cornerRadius(12)
-        .shadow(radius: 2)
+        .shadow(color: Color(hex: "#08000000"), radius: 16, x: 8, y: 8)  // 设置阴影颜色
     }
     
     // 从中文数字获取阿拉伯数字
