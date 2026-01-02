@@ -333,65 +333,95 @@ struct PoemCardView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 ForEach(item.poem.description[i], id: \.self) { line in
                                     Text(line)
-                                        .font(.body)
+                                        .font(.system(size: 18))
                                         .multilineTextAlignment(.leading)
                                         .frame(width: 20)
                                 }
                             }
                         }
                         Text("谶曰")
-                            .font(.headline)
+                            .font(.title3)
                             .fontWeight(.bold)
                             .frame(width: 20)
+                            
                     }
                     
                 }
-                HStack(alignment: .top, spacing:4 ){
+                HStack(alignment: .top, spacing:8 ){
                   // 预测内容
                     ForEach(0..<item.poem.predict.count, id: \.self) { i in
                         VStack(alignment: .leading, spacing: 4) {
                             ForEach(item.poem.predict[i], id: \.self) { line in
                                 Text(line)
-                                    .font(.body)
+                                    .font(.system(size: 18))
                                     .multilineTextAlignment(.leading)
-                                    .frame(width: 20)
+                                    .frame(width: 18)
                             }
                         }
                     }
                     Text("谶曰")
-                        .font(.headline)
+                        .font(.title3)
                         .fontWeight(.bold)
                         .frame(width: 20)
                 }
                 //标题内容
-                VStack(spacing:16) {
-                    Text("第\(item.title.sn)象")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .frame(width: 20)
-                        .foregroundColor(.white)
-                   
-                    Text(item.title.ganZhi)
-                        .font(.subheadline)
-                        .foregroundColor(.white)
-                        .frame(width: 20)
-                   
-                    Text(item.title.hexagrams1)
-                        .font(.subheadline)
-                        .foregroundColor(.white)
-                        .frame(width: 20)
-                   
-                    Text(item.title.hexagrams2)
-                        .font(.subheadline)
-                        .foregroundColor(.white)
-                        .frame(width: 20)
-                    
+                VStack(spacing:4){
+                    VStack(){
+                        Text(" ")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .frame(width: 20)
+                            .foregroundColor(.white)
+                    }
+                        .padding(.leading,8)
+                        .padding(.trailing,8)
+                        .frame(width: .infinity,height: 16)
+                        .background(Color(hex: "#D0021B"))
+                    VStack(spacing:16) {
+                        
+                        Text("第\(item.title.sn)象")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .frame(width: 20)
+                            .foregroundColor(.white)
+                       
+                        Text(item.title.ganZhi)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .frame(width: 20)
+                       
+                        Text(item.title.hexagrams1)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .frame(width: 20)
+                       
+                        Text(item.title.hexagrams2)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .frame(width: 20)
+                        
+                    }
+                    .padding(.top,16)
+                    .padding(.bottom,16)
+                    .padding(.leading,8)
+                    .padding(.trailing,8)
+                    .background(Color(hex: "#D0021B"))
+                    VStack(){
+                        Text(" ")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .frame(width: 20)
+                            .foregroundColor(.white)
+                    }
+                        .padding(.leading,8)
+                        .padding(.trailing,8)
+                        .frame(width: .infinity,height: 8)
+                        .background(Color(hex: "#D0021B"))
                 }
-                .padding(.top,16)
-                .padding(.bottom,16)
-                .padding(.leading,8)
-                .padding(.trailing,8)
-                .background(Color(hex: "#D0021B"))
+                
                 
                
             }
