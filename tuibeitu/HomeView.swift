@@ -12,6 +12,9 @@ struct HomeView: View {
     @State private var poemItems: [PoemItem] = []
     @State private var isLoading = true
     @State private var errorMessage: String? = nil
+    @State private var currentIndex = 0
+    @State private var targetIndex = 0
+    @State private var dragOffset = CGFloat.zero
     
     var body: some View {
         NavigationView {
@@ -51,14 +54,46 @@ struct HomeView: View {
                     }
                     .padding()
                 } else {
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(poemItems) { item in
-                                PoemCardView(item: item)
-                                    .padding(.horizontal)
+                    GeometryReader { geometry in
+                        ZStack {
+                            ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
+                                VStack {
+                                    PoemCardView(item: item)
+                                        .padding(.horizontal)
+                                }
+                                .frame(width: geometry.size.width, height: geometry.size.height)
+                                .offset(y: (CGFloat(index - targetIndex) * geometry.size.height) + dragOffset)
                             }
                         }
-                        
+                        .gesture(
+                            DragGesture()
+                                .onChanged { gesture in
+                                    dragOffset = gesture.translation.height
+                                }
+                                .onEnded { gesture in
+                                    let velocity = gesture.velocity.height
+                                    let threshold = geometry.size.height / 4 // 减小阈值以提高灵敏度
+                                    
+                                    // 计算新的目标索引
+                                    var newIndex = targetIndex
+                                    
+                                    if dragOffset > threshold || (dragOffset > 0 && velocity > 1000) {
+                                        // 向上滑动（内容向下移动），显示上一张卡片
+                                        newIndex = max(0, targetIndex - 1)
+                                    } else if dragOffset < -threshold || (dragOffset < 0 && velocity < -1000) {
+                                        // 向下滑动（内容向上移动），显示下一张卡片
+                                        newIndex = min(poemItems.count - 1, targetIndex + 1)
+                                    }
+                                    
+                                    // 更新索引并重置偏移
+                                    withAnimation {
+                                        targetIndex = newIndex
+                                        currentIndex = newIndex
+                                    }
+                                    
+                                    dragOffset = 0
+                                }
+                        )
                     }
                     .background(Color(hex: "#EEDAB9"))  // 设置页面背景色
                 }
@@ -68,6 +103,15 @@ struct HomeView: View {
         .onAppear {
             loadPoemData()
         }
+    }
+    
+    private func getCurrentIndexBasedOnOffset(offset: CGFloat, currentIndex: Int, totalItems: Int) -> Int {
+        if offset < -100 { // 向上滑动，显示下一项
+            return min(totalItems - 1, max(0, currentIndex + 1))
+        } else if offset > 100 { // 向下滑动，显示上一项
+            return min(totalItems - 1, max(0, currentIndex - 1))
+        }
+        return currentIndex
     }
     
     private func loadPoemData() {
