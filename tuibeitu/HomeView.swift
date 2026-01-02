@@ -59,7 +59,7 @@ struct HomeView: View {
                             ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
                                 VStack {
                                     PoemCardView(item: item)
-                                        .padding(.horizontal)
+                                        .padding(.horizontal, 24)
                                 }
                                 .frame(width: geometry.size.width, height: geometry.size.height)
                                 .offset(y: (CGFloat(index - currentIndex) * geometry.size.height) + dragOffset)
