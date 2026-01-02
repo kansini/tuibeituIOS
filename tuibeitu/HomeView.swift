@@ -364,8 +364,7 @@ struct PoemCardView: View {
                         .frame(width: 20)
                 }
                 //标题内容
-                VStack {
-            
+                VStack(spacing:16) {
                     Text("第\(item.title.sn)象")
                         .font(.headline)
                         .fontWeight(.bold)
