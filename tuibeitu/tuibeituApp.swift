@@ -25,7 +25,7 @@ struct tuibeituApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            SplashView()
                 .modelContainer(sharedModelContainer)
         }
     }

@@ -13,7 +13,7 @@ struct HomeView: View {
     @State private var isLoading = true
     @State private var errorMessage: String? = nil
     @State private var currentIndex = 0
-    @State private var targetIndex = 0
+    @State private var offset = CGFloat.zero
     @State private var dragOffset = CGFloat.zero
     
     var body: some View {
@@ -62,9 +62,11 @@ struct HomeView: View {
                                         .padding(.horizontal)
                                 }
                                 .frame(width: geometry.size.width, height: geometry.size.height)
-                                .offset(y: (CGFloat(index - targetIndex) * geometry.size.height) + dragOffset)
+                                .offset(y: (CGFloat(index - currentIndex) * geometry.size.height) + dragOffset)
+                                .clipped()
                             }
                         }
+                        .contentShape(Rectangle())
                         .gesture(
                             DragGesture()
                                 .onChanged { gesture in
@@ -72,22 +74,19 @@ struct HomeView: View {
                                 }
                                 .onEnded { gesture in
                                     let velocity = gesture.velocity.height
-                                    let threshold = geometry.size.height / 4 // 减小阈值以提高灵敏度
+                                    let threshold = geometry.size.height / 4
                                     
-                                    // 计算新的目标索引
-                                    var newIndex = targetIndex
+                                    var newIndex = currentIndex
                                     
-                                    if dragOffset > threshold || (dragOffset > 0 && velocity > 1000) {
-                                        // 向上滑动（内容向下移动），显示上一张卡片
-                                        newIndex = max(0, targetIndex - 1)
-                                    } else if dragOffset < -threshold || (dragOffset < 0 && velocity < -1000) {
-                                        // 向下滑动（内容向上移动），显示下一张卡片
-                                        newIndex = min(poemItems.count - 1, targetIndex + 1)
+                                    if dragOffset < -threshold || (dragOffset < 0 && velocity < -500) {
+                                        // 向上滑动，显示下一张
+                                        newIndex = min(poemItems.count - 1, currentIndex + 1)
+                                    } else if dragOffset > threshold || (dragOffset > 0 && velocity > 500) {
+                                        // 向下滑动，显示上一张
+                                        newIndex = max(0, currentIndex - 1)
                                     }
                                     
-                                    // 更新索引并重置偏移
                                     withAnimation {
-                                        targetIndex = newIndex
                                         currentIndex = newIndex
                                     }
                                     
@@ -98,8 +97,8 @@ struct HomeView: View {
                     .background(Color(hex: "#EEDAB9"))  // 设置页面背景色
                 }
             }
-    
         }
+        .navigationBarHidden(true) // 隐藏导航栏以移除顶部空白
         .onAppear {
             loadPoemData()
         }
