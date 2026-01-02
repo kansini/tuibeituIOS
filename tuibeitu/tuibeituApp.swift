@@ -33,32 +33,35 @@ struct tuibeituApp: App {
 
 struct MainTabView: View {
     var body: some View {
-        TabView {
-            NavigationView {
-                HomeView()
-            }
-            .tabItem {
-                Image(systemName: "house")
-                Text("首页")
-            }
-            NavigationView {
-                DiscoveryView()
-                    
-            }
-            .tabItem {
-                Image(systemName: "globe")
-                Text("发现")
-            }
-            
-            NavigationView {
-                SettingsView()
-                  
-            }
-            .tabItem {
-                Image(systemName: "person.circle")
-                Text("我的")
-            }
+        NavigationView {
+            HomeView()
         }
+//        TabView {
+//            NavigationView {
+//                HomeView()
+//            }
+//            .tabItem {
+//                Image(systemName: "house")
+//                Text("首页")
+//            }
+//            NavigationView {
+//                DiscoveryView()
+//                    
+//            }
+//            .tabItem {
+//                Image(systemName: "globe")
+//                Text("发现")
+//            }
+//            
+//            NavigationView {
+//                SettingsView()
+//                  
+//            }
+//            .tabItem {
+//                Image(systemName: "person.circle")
+//                Text("我的")
+//            }
+//        }
     }
 }
 

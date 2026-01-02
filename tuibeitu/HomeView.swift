@@ -313,7 +313,7 @@ struct PoemCardView: View {
     let item: PoemItem
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .trailing, spacing: 8) {
             // 显示对应图片
             ImageView(
                 imageName: "figure\(getNumberFromSn(item.title.sn))",
@@ -324,49 +324,77 @@ struct PoemCardView: View {
             .padding(.horizontal, -16) // 扩展到边缘
             .padding(.top, -32) // 与顶部对齐
             .padding(.vertical, 16) // 添加上下padding 16
-        
-            
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("第\(item.title.sn)象")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                    Spacer()
-                    Text(item.title.ganZhi)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                
-                Text("卦辞: \(item.title.hexagrams2) (\(item.title.hexagrams1))")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
-                // 预测内容
-                ForEach(0..<item.poem.predict.count, id: \.self) { i in
-                    VStack(alignment: .leading, spacing: 4) {
-                        ForEach(item.poem.predict[i], id: \.self) { line in
-                            Text(line)
-                                .font(.body)
-                                .multilineTextAlignment(.leading)
-                        }
-                    }
-                }
-                
+               
+            HStack(alignment: .top, spacing: 48) {
                 // 描述内容
                 if !item.poem.description.isEmpty {
-                    Divider()
+                    HStack(alignment: .top, spacing:16 ){
+                        ForEach(0..<item.poem.description.count, id: \.self) { i in
+                            VStack(alignment: .leading, spacing: 8) {
+                                ForEach(item.poem.description[i], id: \.self) { line in
+                                    Text(line)
+                                        .font(.body)
+                                        .multilineTextAlignment(.leading)
+                                        .frame(width: 20)
+                                }
+                            }
+                        }
+                        Text("谶曰")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .frame(width: 20)
+                    }
                     
-                    ForEach(0..<item.poem.description.count, id: \.self) { i in
+                }
+                HStack(alignment: .top, spacing:4 ){
+                  // 预测内容
+                    ForEach(0..<item.poem.predict.count, id: \.self) { i in
                         VStack(alignment: .leading, spacing: 4) {
-                            ForEach(item.poem.description[i], id: \.self) { line in
+                            ForEach(item.poem.predict[i], id: \.self) { line in
                                 Text(line)
                                     .font(.body)
-                                    .foregroundColor(.secondary)
                                     .multilineTextAlignment(.leading)
+                                    .frame(width: 20)
                             }
                         }
                     }
+                    Text("谶曰")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .frame(width: 20)
                 }
+                //标题内容
+                VStack {
+            
+                    Text("第\(item.title.sn)象")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .frame(width: 20)
+                        .foregroundColor(.white)
+                   
+                    Text(item.title.ganZhi)
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                        .frame(width: 20)
+                   
+                    Text(item.title.hexagrams1)
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                        .frame(width: 20)
+                   
+                    Text(item.title.hexagrams2)
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                        .frame(width: 20)
+                    
+                }
+                .padding(.top,16)
+                .padding(.bottom,16)
+                .padding(.leading,8)
+                .padding(.trailing,8)
+                .background(Color(hex: "#D0021B"))
+                
+               
             }
             .padding(.top, 8)
         }
