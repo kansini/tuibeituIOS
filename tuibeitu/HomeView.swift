@@ -322,7 +322,7 @@ struct PoemCardView: View {
             .frame(height: 264)
             .clipped()
             .padding(.horizontal, -16) // 扩展到边缘
-            .padding(.top, -32) // 与顶部对齐
+            .padding(.top, 0) // 与顶部对齐，移除负值
             .padding(.vertical, 16) // 添加上下padding 16
                
             HStack(alignment: .top, spacing: 48) {
