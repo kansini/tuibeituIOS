@@ -33,9 +33,7 @@ struct tuibeituApp: App {
 
 struct MainTabView: View {
     var body: some View {
-        NavigationView {
-            HomeView()
-        }
+        HomeView()
 //        TabView {
 //            NavigationView {
 //                HomeView()

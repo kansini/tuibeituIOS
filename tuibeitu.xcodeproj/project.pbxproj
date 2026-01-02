@@ -10,9 +10,22 @@
 		FDA9E6A62F06498C00230BF9 /* tuibeitu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tuibeitu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		FD34435A2F07AA8800730921 /* Exceptions for "tuibeitu" folder in "tuibeitu" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			assetTagsByRelativePath = {
+				resources/fonts/zhuqueFangsong.ttf = (New, );
+			};
+			target = FDA9E6A52F06498C00230BF9 /* tuibeitu */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		FDA9E6A82F06498C00230BF9 /* tuibeitu */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FD34435A2F07AA8800730921 /* Exceptions for "tuibeitu" folder in "tuibeitu" target */,
+			);
 			path = tuibeitu;
 			sourceTree = "<group>";
 		};
@@ -77,6 +90,9 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
+				KnownAssetTags = (
+					New,
+				);
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
@@ -253,6 +269,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = tuibeitu/resources/fonts/zhuqueFangsong.ttf;
 				DEVELOPMENT_TEAM = 85R3872WSH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -286,6 +303,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = tuibeitu/resources/fonts/zhuqueFangsong.ttf;
 				DEVELOPMENT_TEAM = 85R3872WSH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
