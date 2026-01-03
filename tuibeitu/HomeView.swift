@@ -59,7 +59,7 @@ struct HomeView: View {
                             ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
                                 VStack {
                                     PoemCardView(item: item)
-                                        .padding(.horizontal, 24)
+                                        .padding(.horizontal, 16)
                                 }
                                 .frame(width: geometry.size.width, height: geometry.size.height)
                                 .offset(y: (CGFloat(index - currentIndex) * geometry.size.height) + dragOffset)
@@ -319,7 +319,7 @@ struct PoemCardView: View {
                 imageName: "figure\(getNumberFromSn(item.title.sn))",
                 figureNumber: getNumberFromSn(item.title.sn)
             )
-            .frame(height: 264)
+            .frame(height: 280)
             .clipped()
             .padding(.horizontal, -16) // 扩展到边缘
             .padding(.top, -16) // 与顶部对齐，移除负值
@@ -333,14 +333,14 @@ struct PoemCardView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 ForEach(item.poem.description[i], id: \.self) { line in
                                     Text(line)
-                                        .font(.system(size: 18))
+                                        .font(.fangzheng(fontStyle: .headline))
                                         .multilineTextAlignment(.leading)
-                                        .frame(width: 20)
+                                        .frame(width: 18)
                                 }
                             }
                         }
-                        Text("谶曰")
-                            .font(.title3)
+                        Text("颂曰")
+                            .font(.fangzheng(fontStyle: .title2))
                             .fontWeight(.bold)
                             .frame(width: 20)
                             
@@ -353,52 +353,44 @@ struct PoemCardView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             ForEach(item.poem.predict[i], id: \.self) { line in
                                 Text(line)
-                                    .font(.system(size: 18))
+                                    .font(.fangzheng(fontStyle: .headline))
                                     .multilineTextAlignment(.leading)
                                     .frame(width: 18)
                             }
                         }
                     }
                     Text("谶曰")
-                        .font(.title3)
+                        .font(.fangzheng(fontStyle: .title2))
                         .fontWeight(.bold)
                         .frame(width: 20)
                 }
                 //标题内容
                 VStack(spacing:4){
-                    VStack(){
-                        Text(" ")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .frame(width: 20)
-                            .foregroundColor(.white)
-                    }
-                        .padding(.leading,8)
-                        .padding(.trailing,8)
-                        .frame(width: .infinity,height: 16)
-                        .background(Color(hex: "#D0021B"))
+                    Rectangle()
+                        .fill(Color("PrimaryRed"))
+                        .frame(width: 36,height: 16)
                     VStack(spacing:16) {
                         
                         Text("第\(item.title.sn)象")
-                            .font(.title3)
+                            .font(.fangzheng(fontStyle: .title2))
                             .fontWeight(.bold)
                             .frame(width: 20)
                             .foregroundColor(.white)
                        
                         Text(item.title.ganZhi)
-                            .font(.title3)
+                            .font(.fangzheng(fontStyle: .title2))
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                             .frame(width: 20)
                        
                         Text(item.title.hexagrams1)
-                            .font(.title3)
+                            .font(.fangzheng(fontStyle: .title2))
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                             .frame(width: 20)
                        
                         Text(item.title.hexagrams2)
-                            .font(.title3)
+                            .font(.fangzheng(fontStyle: .title2))
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                             .frame(width: 20)
@@ -408,18 +400,11 @@ struct PoemCardView: View {
                     .padding(.bottom,16)
                     .padding(.leading,8)
                     .padding(.trailing,8)
-                    .background(Color(hex: "#D0021B"))
-                    VStack(){
-                        Text(" ")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .frame(width: 20)
-                            .foregroundColor(.white)
-                    }
-                        .padding(.leading,8)
-                        .padding(.trailing,8)
-                        .frame(width: .infinity,height: 8)
-                        .background(Color(hex: "#D0021B"))
+                    .background(Color("PrimaryRed"))
+                    Rectangle()
+                        .fill(Color("PrimaryRed"))
+                        .frame(width: 36,height: 8)
+                    
                 }
                 
                 

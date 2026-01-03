@@ -13,9 +13,9 @@
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		FD34435A2F07AA8800730921 /* Exceptions for "tuibeitu" folder in "tuibeitu" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			assetTagsByRelativePath = {
-				resources/fonts/zhuqueFangsong.ttf = (New, );
-			};
+			membershipExceptions = (
+				Info.plist,
+			);
 			target = FDA9E6A52F06498C00230BF9 /* tuibeitu */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -273,6 +273,7 @@
 				DEVELOPMENT_TEAM = 85R3872WSH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = tuibeitu/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "推背图";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -307,6 +308,7 @@
 				DEVELOPMENT_TEAM = 85R3872WSH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = tuibeitu/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "推背图";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
