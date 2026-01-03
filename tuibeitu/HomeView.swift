@@ -19,6 +19,7 @@ struct HomeView: View {
     @State private var selectedAnnotationIndex = 0
     @State private var annotationItems: [String] = []
     @State private var selectedAnnotationText = ""
+    @State private var selectedSnText = ""
     @State private var annotationDataLoaded = false
     
     init(currentIndex: Binding<Int> = .constant(0)) {
@@ -69,18 +70,35 @@ struct HomeView: View {
                             ZStack {
                                 ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
                                     VStack {
+                                        // 添加状态变量用于点击反馈
+                                        @State var isPressed = false
+                                        
                                         PoemCardView(item: item)
                                             .padding(.horizontal, 16)
-                                            .scaleEffect(currentIndex == index ? 1.0 : 1.0)
-                                            .animation(.easeInOut(duration: 0.2), value: currentIndex == index)
+                                            .scaleEffect(showingAnnotation ? 0.98 : 1.0)
+                                            .blur(radius: showingAnnotation ? 8 : 0)
+                                            .animation(.easeInOut(duration: 0.2), value: showingAnnotation)
                                             .onTapGesture {
                                                 // 添加点击反馈效果
                                                 let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                                                 impactFeedback.impactOccurred()
                                                 
+                                                // 触发缩放动画
+                                                withAnimation {
+                                                    isPressed = true
+                                                }
+                                                
+                                                // 延迟恢复原始大小
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                                    withAnimation {
+                                                        isPressed = false
+                                                    }
+                                                }
+                                                
                                                 // 获取注解数据并显示对应的注解
                                                 if annotationDataLoaded && annotationItems.indices.contains(index) {
                                                     selectedAnnotationText = annotationItems[index]
+                                                    selectedSnText = item.title.sn
                                                     selectedAnnotationIndex = index
                                                     showingAnnotation = true
                                                 } else {
@@ -125,7 +143,10 @@ struct HomeView: View {
                                     .clipped()
                                 }
                                 .sheet(isPresented: $showingAnnotation) {
-                                    AnnotationView(annotationText: selectedAnnotationText)
+                                    AnnotationView(
+                                        annotationText: selectedAnnotationText,
+                                        sn: selectedSnText
+                                    )
                                 }
                             }
                             .contentShape(Rectangle())
