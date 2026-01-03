@@ -19,6 +19,7 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             ZStack {
+                Color("BaseBg").ignoresSafeArea()
                 Group {
                     if isLoading {
                         VStack {

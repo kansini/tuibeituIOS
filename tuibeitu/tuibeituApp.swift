@@ -26,7 +26,6 @@ struct tuibeituApp: App {
     var body: some Scene {
         WindowGroup {
             MainTabView()
-                .modelContainer(sharedModelContainer)
         }
     }
 }

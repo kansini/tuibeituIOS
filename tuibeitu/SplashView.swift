@@ -12,7 +12,7 @@ struct SplashView: View {
     
     var body: some View {
         ZStack {
-            Color(hex: "#F5F2E9")
+            Color("LightBg")
                 .edgesIgnoringSafeArea(.all)
             
             if isActive {
