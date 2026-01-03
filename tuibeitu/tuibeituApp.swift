@@ -25,21 +25,31 @@ struct tuibeituApp: App {
 
     var body: some Scene {
         WindowGroup {
-            SplashView()
+            MainTabView()
                 .modelContainer(sharedModelContainer)
         }
     }
 }
 
 struct MainTabView: View {
+    @State private var showContextView = false
+    
     var body: some View {
-        ZStack{
-            TopButtons()
-            HomeView()
+        NavigationStack {
+            ZStack {
+                Color("BaseBg").ignoresSafeArea()
+                
+                VStack {
+                    TopButtons(onContextButtonTapped: {
+                        showContextView = true
+                    })
+                    HomeView()
+                }
+            }
+            .sheet(isPresented: $showContextView) {
+                ContextView()
+            }
         }
-        .frame(width: .infinity,height: .infinity)
-        .background(Color(hex: "#EEDAB9")).ignoresSafeArea() // 设置页面背景色
-        
     }
     struct TopButtons: View{
         // 新增函数：从Resources目录加载图标
@@ -59,36 +69,39 @@ struct MainTabView: View {
             
             return nil
         }
+        var onContextButtonTapped: () -> Void = {}
+        
         var body: some View{
-            ZStack{
+            HStack {
+                Spacer() // 推动按钮到右上角
+                
                 HStack {
                     Button(action: {
-                        print("Context button tapped")
+                        onContextButtonTapped()
                     }) {
                         Image(uiImage: loadImageFromResources(named: "context") ?? UIImage(systemName: "info.circle")!)
                             .resizable()
-                            .frame(width: 20, height: 22)
-
+                            .frame(width: 16, height: 18)
+                            .foregroundColor(.primary)
                     }
-                    .frame(width: 32, height: 32)
-                    .cornerRadius(20)
+                    .frame(width: 28, height: 28)
                     
                     Button(action: {
                         print("Settings button tapped")
                     }) {
                         Image(uiImage: loadImageFromResources(named: "settings") ?? UIImage(systemName: "gear")!)
                             .resizable()
-                            .frame(width: 24, height: 22)
+                            .frame(width: 20, height: 18)
+                            .foregroundColor(.primary)
                     }
-                    .frame(width: 32, height: 32)
-                    .cornerRadius(20)
-                   
+                    .frame(width: 28, height: 28)
                 }
+                .padding(.trailing, 15)
+                .padding(.top, 10)
             }
         }
     }
 }
-
 #Preview {
     MainTabView()
 }

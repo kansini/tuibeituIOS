@@ -95,7 +95,7 @@ struct HomeView: View {
                                     }
                             )
                         }
-                        
+                        .background(Color("BaseBg"))  // 设置页面背景色
                     }
                 }
                 
