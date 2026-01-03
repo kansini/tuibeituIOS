@@ -15,6 +15,11 @@ struct HomeView: View {
     @Binding var currentIndex: Int
     @State private var offset = CGFloat.zero
     @State private var dragOffset = CGFloat.zero
+    @State private var showingAnnotation = false
+    @State private var selectedAnnotationIndex = 0
+    @State private var annotationItems: [String] = []
+    @State private var selectedAnnotationText = ""
+    @State private var annotationDataLoaded = false
     
     init(currentIndex: Binding<Int> = .constant(0)) {
         self._currentIndex = currentIndex
@@ -66,10 +71,61 @@ struct HomeView: View {
                                     VStack {
                                         PoemCardView(item: item)
                                             .padding(.horizontal, 16)
+                                            .scaleEffect(currentIndex == index ? 1.0 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: currentIndex == index)
+                                            .onTapGesture {
+                                                // 添加点击反馈效果
+                                                let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                                                impactFeedback.impactOccurred()
+                                                
+                                                // 获取注解数据并显示对应的注解
+                                                if annotationDataLoaded && annotationItems.indices.contains(index) {
+                                                    selectedAnnotationText = annotationItems[index]
+                                                    selectedAnnotationIndex = index
+                                                    showingAnnotation = true
+                                                } else {
+                                                    // 如果注解数据还未加载，先加载注解数据
+                                                    if !annotationDataLoaded {
+                                                        PoemDataLoader.loadAnnotationData { result in
+                                                            switch result {
+                                                            case .success(let annotations):
+                                                                DispatchQueue.main.async {
+                                                                    annotationItems = annotations
+                                                                    annotationDataLoaded = true
+                                                                    if annotations.indices.contains(index) {
+                                                                        selectedAnnotationText = annotations[index]
+                                                                        selectedAnnotationIndex = index
+                                                                        showingAnnotation = true
+                                                                    }
+                                                                }
+                                                            case .failure(let error):
+                                                                print("加载注解数据失败: \(error)")
+                                                                // 如果注解加载失败，可以考虑显示一个错误信息或默认文本
+                                                                selectedAnnotationText = "注解数据加载失败"
+                                                                selectedAnnotationIndex = index
+                                                                showingAnnotation = true
+                                                            }
+                                                        }
+                                                    } else {
+                                                        // 注解数据已加载但当前索引没有数据
+                                                        if annotationItems.indices.contains(index) {
+                                                            selectedAnnotationText = annotationItems[index]
+                                                            selectedAnnotationIndex = index
+                                                            showingAnnotation = true
+                                                        } else {
+                                                            selectedAnnotationText = "未找到对应注解"
+                                                            showingAnnotation = true
+                                                        }
+                                                    }
+                                                }
+                                            }
                                     }
                                     .frame(width: geometry.size.width, height: geometry.size.height)
                                     .offset(y: (CGFloat(index - currentIndex) * geometry.size.height) + dragOffset)
                                     .clipped()
+                                }
+                                .sheet(isPresented: $showingAnnotation) {
+                                    AnnotationView(annotationText: selectedAnnotationText)
                                 }
                             }
                             .contentShape(Rectangle())
@@ -116,6 +172,21 @@ struct HomeView: View {
         .navigationBarHidden(true) // 隐藏导航栏以移除顶部空白
         .onAppear {
             loadPoemData()
+            // 检查是否已加载注解数据，如果没有则加载
+            if !annotationDataLoaded {
+                PoemDataLoader.loadAnnotationData { result in
+                    switch result {
+                    case .success(let annotations):
+                        DispatchQueue.main.async {
+                            annotationItems = annotations
+                            annotationDataLoaded = true
+                            print("成功加载 \(annotations.count) 项注解数据")
+                        }
+                    case .failure(let error):
+                        print("预加载注解数据失败: \(error)")
+                    }
+                }
+            }
         }
     }
     
@@ -222,7 +293,14 @@ struct ImageView: View {
     }
 }
 
-
+// 自定义按钮样式以实现点击反馈
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
+    }
+}
 
 struct PoemCardView: View {
     let item: PoemItem
@@ -248,16 +326,16 @@ struct PoemCardView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 ForEach(item.poem.description[i], id: \.self) { line in
                                     Text(line)
-                                        .font(.fangzheng(fontStyle: .headline))
+                                        .font(.fangzheng(size:20))
                                         .multilineTextAlignment(.leading)
-                                        .frame(width: 18)
+                                        .frame(width: 20)
                                 }
                             }
                         }
                         Text("颂曰")
-                            .font(.fangzheng(fontStyle: .title2))
+                            .font(.fangzheng(size:22))
                             .fontWeight(.bold)
-                            .frame(width: 20)
+                            .frame(width: 22)
                             
                     }
                     
@@ -268,16 +346,16 @@ struct PoemCardView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             ForEach(item.poem.predict[i], id: \.self) { line in
                                 Text(line)
-                                    .font(.fangzheng(fontStyle: .headline))
+                                    .font(.fangzheng(size:20))
                                     .multilineTextAlignment(.leading)
-                                    .frame(width: 18)
+                                    .frame(width: 20)
                             }
                         }
                     }
                     Text("谶曰")
-                        .font(.fangzheng(fontStyle: .title2))
+                        .font(.fangzheng(size:22))
                         .fontWeight(.bold)
-                        .frame(width: 20)
+                        .frame(width: 22)
                 }
                 //标题内容
                 VStack(spacing:4){
@@ -287,25 +365,25 @@ struct PoemCardView: View {
                     VStack(spacing:16) {
                         
                         Text("第\(item.title.sn)象")
-                            .font(.fangzheng(fontStyle: .title2))
+                            .font(.fangzheng(size:22))
                             .fontWeight(.bold)
                             .frame(width: 20)
                             .foregroundColor(.white)
                        
                         Text(item.title.ganZhi)
-                            .font(.fangzheng(fontStyle: .title2))
+                            .font(.fangzheng(size:22))
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                             .frame(width: 20)
                        
                         Text(item.title.hexagrams1)
-                            .font(.fangzheng(fontStyle: .title2))
+                            .font(.fangzheng(size:22))
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                             .frame(width: 20)
                        
                         Text(item.title.hexagrams2)
-                            .font(.fangzheng(fontStyle: .title2))
+                            .font(.fangzheng(size:22))
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                             .frame(width: 20)

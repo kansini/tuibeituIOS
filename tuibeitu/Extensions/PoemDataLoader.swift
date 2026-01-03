@@ -119,4 +119,52 @@ struct PoemDataLoader {
             )
         )
     ]
+    
+    // 加载注解数据
+    static func loadAnnotationData(completion: @escaping (Result<[String], Error>) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            // 尝试加载注解数据
+            var jsonData: Data?
+            var foundPath: String?
+            
+            let possiblePaths = [
+                Bundle.main.path(forResource: "data/annotion", ofType: "json"),
+                Bundle.main.path(forResource: "annotion", ofType: "json", inDirectory: "data"),
+                Bundle.main.path(forResource: "annotion", ofType: "json")
+            ]
+            
+            for path in possiblePaths {
+                if let filePath = path {
+                    print("找到注解文件可能的路径: \(filePath)")
+                    if let data = try? Data(contentsOf: URL(fileURLWithPath: filePath)) {
+                        jsonData = data
+                        foundPath = filePath
+                        print("成功读取注解文件: \(filePath)")
+                        break
+                    } else {
+                        print("注解文件读取失败: \(filePath)")
+                    }
+                }
+            }
+            
+            if let data = jsonData {
+                do {
+                    let annotations = try JSONDecoder().decode([String].self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(annotations))
+                    }
+                } catch {
+                    print("注解数据解码错误: \(error)")
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            } else {
+                print("在bundle中找不到annotion.json文件")
+                DispatchQueue.main.async {
+                    completion(.failure(NSError(domain: "annotion.json not found", code: 0, userInfo: nil)))
+                }
+            }
+        }
+    }
 }

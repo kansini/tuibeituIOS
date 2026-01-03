@@ -21,21 +21,7 @@ struct ContextView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "xmark")
-                        .foregroundColor(.primary)
-                        .frame(width: 40, height: 40)
-                }
-                .frame(width: 48, height: 48)
-                
-                Spacer()
-            }
-            .padding(.top, 8)
-            .padding(.leading, -8)
+        NavigationView{
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 8), spacing: 8) {
                     ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
@@ -45,11 +31,22 @@ struct ContextView: View {
                     }
                 }
             }
-           
-            
-            Spacer()
+            .padding(.horizontal, 16)
+            .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("目录")
+                            .font(.fangzheng(size: 28, fontWeight: .bold))
+                            }
+                        }
+            .navigationBarItems(leading: Button(action:{dismiss()}) {
+                Image(systemName: "xmark")
+                   .foregroundColor(.primary)
+                   .frame(width: 16, height: 16)
+            }
+            .frame(width: 24, height: 24)
+            .cornerRadius(40)
+            )
         }
-        .padding(.horizontal, 24)
         .background(Color("LightBg"))
         .onAppear {
             loadPoemData()
