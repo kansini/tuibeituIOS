@@ -33,33 +33,59 @@ struct tuibeituApp: App {
 
 struct MainTabView: View {
     var body: some View {
-        HomeView()
-//        TabView {
-//            NavigationView {
-//                HomeView()
-//            }
-//            .tabItem {
-//                Image(systemName: "house")
-//                Text("首页")
-//            }
-//            NavigationView {
-//                DiscoveryView()
-//                    
-//            }
-//            .tabItem {
-//                Image(systemName: "globe")
-//                Text("发现")
-//            }
-//            
-//            NavigationView {
-//                SettingsView()
-//                  
-//            }
-//            .tabItem {
-//                Image(systemName: "person.circle")
-//                Text("我的")
-//            }
-//        }
+        ZStack{
+            TopButtons()
+            HomeView()
+        }
+        .frame(width: .infinity,height: .infinity)
+        .background(Color(hex: "#EEDAB9")).ignoresSafeArea() // 设置页面背景色
+        
+    }
+    struct TopButtons: View{
+        // 新增函数：从Resources目录加载图标
+        private func loadImageFromResources(named: String) -> UIImage? {
+            // 尝试从 Resources/icons 目录加载图片
+            let paths = [
+                Bundle.main.path(forResource: named, ofType: "png", inDirectory: "Resources/icons"),
+                Bundle.main.path(forResource: named, ofType: "png", inDirectory: "icons"),
+                Bundle.main.path(forResource: named, ofType: "png")
+            ]
+            
+            for path in paths {
+                if let path = path, let image = UIImage(contentsOfFile: path) {
+                    return image
+                }
+            }
+            
+            return nil
+        }
+        var body: some View{
+            ZStack{
+                HStack {
+                    Button(action: {
+                        print("Context button tapped")
+                    }) {
+                        Image(uiImage: loadImageFromResources(named: "context") ?? UIImage(systemName: "info.circle")!)
+                            .resizable()
+                            .frame(width: 20, height: 22)
+
+                    }
+                    .frame(width: 32, height: 32)
+                    .cornerRadius(20)
+                    
+                    Button(action: {
+                        print("Settings button tapped")
+                    }) {
+                        Image(uiImage: loadImageFromResources(named: "settings") ?? UIImage(systemName: "gear")!)
+                            .resizable()
+                            .frame(width: 24, height: 22)
+                    }
+                    .frame(width: 32, height: 32)
+                    .cornerRadius(20)
+                   
+                }
+            }
+        }
     }
 }
 

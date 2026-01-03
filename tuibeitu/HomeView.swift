@@ -18,84 +18,88 @@ struct HomeView: View {
     
     var body: some View {
         NavigationView {
-            Group {
-                if isLoading {
-                    VStack {
-                        ProgressView("加载中...")
-                        Text("正在加载数据...")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                } else if let error = errorMessage {
-                    VStack(spacing: 16) {
-                        Image(systemName: "exclamationmark.triangle")
-                            .font(.largeTitle)
-                            .foregroundColor(.orange)
-                        Text("加载失败")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        Text(error)
-                            .foregroundColor(.secondary)
-                            .font(.caption)
-                        Button("重试") {
-                            loadPoemData()
+            ZStack {
+                Group {
+                    if isLoading {
+                        VStack {
+                            ProgressView("加载中...")
+                            Text("正在加载数据...")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
-                        .buttonStyle(.borderedProminent)
-                    }
-                    .padding()
-                } else if poemItems.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(systemName: "book.closed")
-                            .font(.largeTitle)
-                            .foregroundColor(.secondary)
-                        Text("暂无数据")
-                            .font(.title2)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding()
-                } else {
-                    GeometryReader { geometry in
-                        ZStack {
-                            ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
-                                VStack {
-                                    PoemCardView(item: item)
-                                        .padding(.horizontal, 16)
-                                }
-                                .frame(width: geometry.size.width, height: geometry.size.height)
-                                .offset(y: (CGFloat(index - currentIndex) * geometry.size.height) + dragOffset)
-                                .clipped()
+                    } else if let error = errorMessage {
+                        VStack(spacing: 16) {
+                            Image(systemName: "exclamationmark.triangle")
+                                .font(.largeTitle)
+                                .foregroundColor(.orange)
+                            Text("加载失败")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                            Text(error)
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                            Button("重试") {
+                                loadPoemData()
                             }
+                            .buttonStyle(.borderedProminent)
                         }
-                        .contentShape(Rectangle())
-                        .gesture(
-                            DragGesture()
-                                .onChanged { gesture in
-                                    dragOffset = gesture.translation.height
-                                }
-                                .onEnded { gesture in
-                                    let velocity = gesture.velocity.height
-                                    let threshold = geometry.size.height / 4
-                                    
-                                    var newIndex = currentIndex
-                                    
-                                    if dragOffset < -threshold || (dragOffset < 0 && velocity < -500) {
-                                        // 向上滑动，显示下一张
-                                        newIndex = min(poemItems.count - 1, currentIndex + 1)
-                                    } else if dragOffset > threshold || (dragOffset > 0 && velocity > 500) {
-                                        // 向下滑动，显示上一张
-                                        newIndex = max(0, currentIndex - 1)
+                        .padding()
+                    } else if poemItems.isEmpty {
+                        VStack(spacing: 16) {
+                            Image(systemName: "book.closed")
+                                .font(.largeTitle)
+                                .foregroundColor(.secondary)
+                            Text("暂无数据")
+                                .font(.title2)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                    } else {
+                        GeometryReader { geometry in
+                            ZStack {
+                                ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
+                                    VStack {
+                                        PoemCardView(item: item)
+                                            .padding(.horizontal, 16)
                                     }
-                                    
-                                    withAnimation {
-                                        currentIndex = newIndex
-                                    }
-                                    
-                                    dragOffset = 0
+                                    .frame(width: geometry.size.width, height: geometry.size.height)
+                                    .offset(y: (CGFloat(index - currentIndex) * geometry.size.height) + dragOffset)
+                                    .clipped()
                                 }
-                        )
+                            }
+                            .contentShape(Rectangle())
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { gesture in
+                                        dragOffset = gesture.translation.height
+                                    }
+                                    .onEnded { gesture in
+                                        let velocity = gesture.velocity.height
+                                        let threshold = geometry.size.height / 4
+                                        
+                                        var newIndex = currentIndex
+                                        
+                                        if dragOffset < -threshold || (dragOffset < 0 && velocity < -500) {
+                                            // 向上滑动，显示下一张
+                                            newIndex = min(poemItems.count - 1, currentIndex + 1)
+                                        } else if dragOffset > threshold || (dragOffset > 0 && velocity > 500) {
+                                            // 向下滑动，显示上一张
+                                            newIndex = max(0, currentIndex - 1)
+                                        }
+                                        
+                                        withAnimation {
+                                            currentIndex = newIndex
+                                        }
+                                        
+                                        dragOffset = 0
+                                    }
+                            )
+                        }
+                        
                     }
-                    .background(Color(hex: "#EEDAB9"))  // 设置页面背景色
                 }
+                
+               
             }
         }
         .navigationBarHidden(true) // 隐藏导航栏以移除顶部空白
@@ -103,6 +107,8 @@ struct HomeView: View {
             loadPoemData()
         }
     }
+    
+    
     
     private func getCurrentIndexBasedOnOffset(offset: CGFloat, currentIndex: Int, totalItems: Int) -> Int {
         if offset < -100 { // 向上滑动，显示下一项
@@ -308,6 +314,8 @@ struct ImageView: View {
         }
     }
 }
+
+
 
 struct PoemCardView: View {
     let item: PoemItem
