@@ -59,90 +59,18 @@ struct ContextView: View {
         isLoading = true
         errorMessage = nil
         
-        DispatchQueue.global(qos: .userInitiated).async {
-            // 检查 bundle 中的文件
-            print("Bundle 路径: \(Bundle.main.bundlePath)")
-            
-            // 尝试多种可能的路径
-            var jsonData: Data?
-            var foundPath: String?
-            
-            let possiblePaths = [
-                Bundle.main.path(forResource: "data/poem", ofType: "json"),
-                Bundle.main.path(forResource: "poem", ofType: "json", inDirectory: "data"),
-                Bundle.main.path(forResource: "poem", ofType: "json")
-            ]
-            
-            for path in possiblePaths {
-                if let filePath = path {
-                    print("找到可能的路径: \(filePath)")
-                    if let data = try? Data(contentsOf: URL(fileURLWithPath: filePath)) {
-                        jsonData = data
-                        foundPath = filePath
-                        print("成功读取文件: \(filePath)")
-                        break
-                    } else {
-                        print("读取失败: \(filePath)")
-                    }
+        PoemDataLoader.loadPoemData { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let items):
+                    self.poemItems = items
+                    self.isLoading = false
+                    print("成功加载 \(items.count) 项数据")
+                case .failure(let error):
+                    self.errorMessage = "加载失败: \(error)"
+                    self.isLoading = false
                 }
             }
-            
-            if let data = jsonData {
-                print("JSON 数据大小: \(data.count) 字节")
-                
-                // 打印前几个字符以检查格式
-                if let jsonString = String(data: data.prefix(200), encoding: .utf8) {
-                    print("JSON 前缀: \(jsonString)")
-                }
-                
-                do {
-                    let decoder = JSONDecoder()
-                    // 设置日期格式等选项（如果需要）
-                    let items = try decoder.decode([PoemItem].self, from: data)
-                    
-                    DispatchQueue.main.async {
-                        self.poemItems = items
-                        self.isLoading = false
-                        print("成功加载 \(items.count) 项数据，路径: \(foundPath ?? "unknown")")
-                    }
-                } catch let DecodingError.keyNotFound(key, context) {
-                    let error = "解码错误 - 找不到键: \(key), 路径: \(context.codingPath), 详细信息: \(context.debugDescription)"
-                    print(error)
-                    DispatchQueue.main.async {
-                        self.errorMessage = error
-                        self.isLoading = false
-                    }
-                } catch let DecodingError.valueNotFound(value, context) {
-                    let error = "解码错误 - 找不到值: \(value), 路径: \(context.codingPath), 详细信息: \(context.debugDescription)"
-                    print(error)
-                    DispatchQueue.main.async {
-                        self.errorMessage = error
-                        self.isLoading = false
-                    }
-                } catch let DecodingError.typeMismatch(type, context) {
-                    let error = "解码错误 - 类型不匹配: \(type), 路径: \(context.codingPath), 详细信息: \(context.debugDescription)"
-                    print(error)
-                    DispatchQueue.main.async {
-                        self.errorMessage = error
-                        self.isLoading = false
-                    }
-                } catch let error as DecodingError {
-                    print("解码错误: \(error)")
-                    DispatchQueue.main.async {
-                        self.errorMessage = "数据格式错误: \(error)"
-                        self.isLoading = false
-                    }
-                } catch {
-                    print("其他错误: \(error)")
-                    DispatchQueue.main.async {
-                        self.errorMessage = "加载失败: \(error)"
-                        self.isLoading = false
-                    }
-                }
-            } else {
-                print("在bundle中找不到poem.json文件")
-                
-               }
         }
     }
 }
