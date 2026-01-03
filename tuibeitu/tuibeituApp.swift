@@ -47,7 +47,7 @@ struct MainTabView: View {
                 }
             }
             .sheet(isPresented: $showContextView) {
-                ContextView(closeAction: { index in
+                ContextView(currentIndex: $homeViewCurrentIndex, closeAction: { index in
                     homeViewCurrentIndex = index
                     showContextView = false
                 })

@@ -11,8 +11,14 @@ struct ContextView: View {
     @State private var poemItems: [PoemItem] = []
     @State private var isLoading = true
     @State private var errorMessage: String? = nil
+    @Binding var currentIndex: Int
     var closeAction: ((Int) -> Void)?
     @Environment(\.dismiss) var dismiss
+    
+    init(currentIndex: Binding<Int>, closeAction: ((Int) -> Void)? = nil) {
+        self._currentIndex = currentIndex
+        self.closeAction = closeAction
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -33,7 +39,7 @@ struct ContextView: View {
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 8), spacing: 8) {
                     ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
-                        ContextItem(item: item, index: index, onButtonClick: { clickedIndex in
+                        ContextItem(item: item, index: index, currentIndex: currentIndex, onButtonClick: { clickedIndex in
                             closeAction?(clickedIndex)
                         })
                     }
@@ -145,27 +151,26 @@ struct ContextView: View {
 struct ContextItem: View{
     let item: PoemItem
     let index: Int
+    let currentIndex: Int
     let onButtonClick: (Int) -> Void
-    @State var currentIndex: Int = 0
     
     var body: some View{
         Button(action: {
             onButtonClick(index)
-            currentIndex = index
         }){
             Text("第\(item.title.sn)象")
                 .font(.fangzheng(size:14))
                 .frame(width: 18)
-//                .foregroundColor(currentIndex === index ? .black : .white)
+                .foregroundColor(currentIndex == index ? .white : .black)
         }
         .padding(.horizontal,8)
         .padding(.vertical,12)
-//        .background(currentIndex === index ? Color("PrimaryRed"):Color("CardBg"))
+        .background(currentIndex == index ? Color("PrimaryRed"):Color("CardBg"))
         .cornerRadius(20)
     }
 }
 
 
-#Preview {
-    ContextView()
-}
+//#Preview {
+//    ContextView()
+//}
