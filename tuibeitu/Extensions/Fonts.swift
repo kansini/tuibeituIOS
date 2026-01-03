@@ -7,11 +7,11 @@
 
 import SwiftUI
 extension Font{
-    static func fangzheng(fontStyle:Font.TextStyle = .body,fontWeight:Weight = .bold) -> Font{
-        return Font.custom("FZFangSong-Z02", size: 20) // FZFangSong-Z02
+    static func fangzheng(fontStyle:Font.TextStyle = .body, fontWeight:Weight = .bold, size: CGFloat = 20) -> Font{
+        return Font.custom("FZFangSong-Z02", size: size) // FZFangSong-Z02
     }
-    static func hancheng(fontStyle:Font.TextStyle = .body,fontWeight:Weight = .bold) -> Font{
-        return Font.custom("HCZWST2024", size: 20) // FZFangSong-Z02
+    static func hancheng(fontStyle:Font.TextStyle = .body, fontWeight:Weight = .bold, size: CGFloat = 20) -> Font{
+        return Font.custom("HCZWST2024", size: size) // FZFangSong-Z02
     }
 }
 extension Font.TextStyle{
