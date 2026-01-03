@@ -12,9 +12,13 @@ struct HomeView: View {
     @State private var poemItems: [PoemItem] = []
     @State private var isLoading = true
     @State private var errorMessage: String? = nil
-    @State private var currentIndex = 0
+    @Binding var currentIndex: Int
     @State private var offset = CGFloat.zero
     @State private var dragOffset = CGFloat.zero
+    
+    init(currentIndex: Binding<Int> = .constant(0)) {
+        self._currentIndex = currentIndex
+    }
     
     var body: some View {
         NavigationView {
@@ -95,6 +99,12 @@ struct HomeView: View {
                                         dragOffset = 0
                                     }
                             )
+                            .onChange(of: currentIndex) { _, newValue in
+                                // 当外部改变currentIndex时，确保动画过渡
+                                withAnimation {
+                                    currentIndex = min(max(0, newValue), poemItems.count - 1)
+                                }
+                            }
                         }
                         .background(Color("BaseBg"))  // 设置页面背景色
                     }

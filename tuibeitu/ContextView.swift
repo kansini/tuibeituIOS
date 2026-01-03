@@ -11,6 +11,7 @@ struct ContextView: View {
     @State private var poemItems: [PoemItem] = []
     @State private var isLoading = true
     @State private var errorMessage: String? = nil
+    var closeAction: ((Int) -> Void)?
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -32,7 +33,9 @@ struct ContextView: View {
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 8), spacing: 8) {
                     ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
-                        ContextItem(item: item,index:index)
+                        ContextItem(item: item, index: index, onButtonClick: { clickedIndex in
+                            closeAction?(clickedIndex)
+                        })
                     }
                 }
             }
@@ -141,25 +144,23 @@ struct ContextView: View {
 
 struct ContextItem: View{
     let item: PoemItem
-    let index:Int
+    let index: Int
+    let onButtonClick: (Int) -> Void
+    @State var currentIndex: Int = 0
     
     var body: some View{
-        @State var textColor:String = "#333333" // "#ffffff"
-        @State var bgColor:Color = Color("CardBg") // "PrimaryRed"
-        @State var currentIndex:Int = 0
         Button(action: {
+            onButtonClick(index)
             currentIndex = index
-           
-            // do sth.
         }){
             Text("第\(item.title.sn)象")
                 .font(.fangzheng(size:14))
                 .frame(width: 18)
-                .foregroundColor(currentIndex == index ? Color(hex: "#ffffff") : Color(hex: "#333333"))
+//                .foregroundColor(currentIndex === index ? .black : .white)
         }
         .padding(.horizontal,8)
         .padding(.vertical,12)
-        .background(currentIndex == index ? Color("PrimaryRed"): Color("CardBg"))
+//        .background(currentIndex === index ? Color("PrimaryRed"):Color("CardBg"))
         .cornerRadius(20)
     }
 }

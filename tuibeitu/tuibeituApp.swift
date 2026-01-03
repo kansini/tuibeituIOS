@@ -32,6 +32,7 @@ struct tuibeituApp: App {
 
 struct MainTabView: View {
     @State private var showContextView = false
+    @State private var homeViewCurrentIndex = 0
     
     var body: some View {
         NavigationStack {
@@ -42,11 +43,14 @@ struct MainTabView: View {
                     TopButtons(onContextButtonTapped: {
                         showContextView = true
                     })
-                    HomeView()
+                    HomeView(currentIndex: $homeViewCurrentIndex)
                 }
             }
             .sheet(isPresented: $showContextView) {
-                ContextView()
+                ContextView(closeAction: { index in
+                    homeViewCurrentIndex = index
+                    showContextView = false
+                })
             }
         }
     }
