@@ -35,7 +35,7 @@ struct ContextView: View {
             .toolbar {
                     ToolbarItem(placement: .principal) {
                         Text("目录")
-                            .font(.fangzheng(size: 28, fontWeight: .bold))
+                            .font(.fangzheng(size: 24, fontWeight: .bold))
                             }
                         }
             .navigationBarItems(leading: Button(action:{dismiss()}) {
@@ -44,8 +44,7 @@ struct ContextView: View {
                    .frame(width: 16, height: 16)
             }
             .frame(width: 24, height: 24)
-            .cornerRadius(40)
-            )
+            .cornerRadius(40))
         }
         .background(Color("LightBg"))
         .onAppear {
@@ -84,8 +83,8 @@ struct ContextItem: View{
             onButtonClick(index)
         }){
             Text("第\(item.title.sn)象")
-                .font(.fangzheng(size:14))
-                .frame(width: 18)
+                .font(.fangzheng(size:13))
+                .frame(width: 13)
                 .foregroundColor(currentIndex == index ? .white : .black)
         }
         .padding(.horizontal,8)

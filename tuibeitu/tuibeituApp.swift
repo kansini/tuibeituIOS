@@ -32,18 +32,33 @@ struct tuibeituApp: App {
 
 struct MainTabView: View {
     @State private var showContextView = false
+    @State private var navigationPath = NavigationPath()
     @State private var homeViewCurrentIndex = 0
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             ZStack {
                 Color("BaseBg").ignoresSafeArea()
                 
                 VStack {
-                    TopButtons(onContextButtonTapped: {
-                        showContextView = true
-                    })
+                    TopButtons(
+                        onContextButtonTapped: {
+                            showContextView = true
+                        },
+                        onSettingsButtonTapped: {
+                            navigationPath.append("settings")
+                        }
+                    )
+                    
                     HomeView(currentIndex: $homeViewCurrentIndex)
+                }
+                .navigationDestination(for: String.self) { destination in
+                    switch destination {
+                    case "settings":
+                        SettingsView()
+                    default:
+                        EmptyView()
+                    }
                 }
             }
             .sheet(isPresented: $showContextView) {
@@ -73,6 +88,7 @@ struct MainTabView: View {
             return nil
         }
         var onContextButtonTapped: () -> Void = {}
+        var onSettingsButtonTapped: () -> Void = {}
         
         var body: some View{
             HStack {
@@ -90,7 +106,7 @@ struct MainTabView: View {
                     .frame(width: 28, height: 28)
                     
                     Button(action: {
-                        print("Settings button tapped")
+                        onSettingsButtonTapped()
                     }) {
                         Image(uiImage: loadImageFromResources(named: "settings") ?? UIImage(systemName: "gear")!)
                             .resizable()

@@ -349,14 +349,14 @@ struct PoemCardView: View {
                                     Text(line)
                                         .font(.fangzheng(size:20))
                                         .multilineTextAlignment(.leading)
-                                        .frame(width: 20)
+                                        .frame(width: 22)
                                 }
                             }
                         }
                         Text("颂曰")
-                            .font(.fangzheng(size:22))
+                            .font(.fangzheng(size:24))
                             .fontWeight(.bold)
-                            .frame(width: 22)
+                            .frame(width: 20)
                             
                     }
                     
@@ -374,9 +374,9 @@ struct PoemCardView: View {
                         }
                     }
                     Text("谶曰")
-                        .font(.fangzheng(size:22))
+                        .font(.fangzheng(size:24))
                         .fontWeight(.bold)
-                        .frame(width: 22)
+                        .frame(width: 24)
                 }
                 //标题内容
                 VStack(spacing:4){

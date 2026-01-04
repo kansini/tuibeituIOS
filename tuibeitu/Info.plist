@@ -4,6 +4,7 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
+		<string>zhuquefangsong.ttf</string>
 		<string>fangZhengFangSong.ttf</string>
 		<string>hancheng.ttf</string>
 	</array>

@@ -8,7 +8,7 @@
 import SwiftUI
 extension Font{
     static func fangzheng(size: CGFloat = 20, fontWeight:Weight = .bold) -> Font{
-        return Font.custom("FZFangSong-Z02", size: size).weight(fontWeight)
+        return Font.custom("ZhuqueFangsong-Regular", size: size).weight(fontWeight) // FZFangSong-Z02
     }
     static func hancheng(size: CGFloat = 20, fontWeight:Weight = .bold) -> Font{
         return Font.custom("HCZWST2024", size: size).weight(fontWeight)

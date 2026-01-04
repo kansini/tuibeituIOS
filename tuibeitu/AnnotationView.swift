@@ -17,11 +17,11 @@ struct AnnotationView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text("第\(sn)象")
-                    .font(.fangzheng(size: 24))
+                    .font(.fangzheng(size: 22))
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 8)
                 Text(annotationText)
-                    .font(.fangzheng(size: 18))
+                    .font(.fangzheng(size: 20))
                     .lineSpacing(8)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
