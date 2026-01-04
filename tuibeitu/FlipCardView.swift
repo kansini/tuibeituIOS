@@ -58,7 +58,7 @@ struct PoemCardContentView: View {
                 )
                 .frame(height: 296)
                 
-                HStack(alignment: .top, spacing: 48) {
+                HStack(alignment: .top) {
                     // 描述内容
                     if !item.poem.description.isEmpty {
                         HStack(alignment: .top, spacing:16 ){
@@ -80,6 +80,7 @@ struct PoemCardContentView: View {
                         }
                         
                     }
+                    Spacer()
                     HStack(alignment: .top, spacing:8 ){
                         // 预测内容
                         ForEach(0..<item.poem.predict.count, id: \.self) { i in
@@ -97,6 +98,7 @@ struct PoemCardContentView: View {
                             .fontWeight(.bold)
                             .frame(width: 24)
                     }
+                    Spacer()
                     //标题内容
                     VStack(spacing:4){
                         Rectangle()
@@ -142,7 +144,8 @@ struct PoemCardContentView: View {
                     
                 }
                 .padding(.vertical, 8)
-                .padding(.horizontal, 16)
+                .padding(.trailing, 16)
+                .padding(.leading, 48)
             }
         }
     }
@@ -156,27 +159,27 @@ struct AnnotationCardView: View {
     
     var body: some View {
         ScrollView() {
-            ZStack{
-                Text("第\(sn)象")
-                    .font(.fangzheng(size: 20))
-                    .foregroundColor(Color.white)
-                    .padding(.horizontal,16)
-                    .padding(.top, 4)
-                    .padding(.bottom, 8)
-                    .background(Color("PrimaryRed"))
-                    .cornerRadius(20)
-            }
-                .frame(maxWidth: .infinity, alignment: .center)
-            VStack(spacing:16){
+           VStack(spacing:16){
+               ZStack{
+                   Text("第\(sn)象")
+                       .font(.fangzheng(size: 20))
+                       .foregroundColor(Color.white)
+                       .padding(.horizontal,16)
+                       .padding(.top, 4)
+                       .padding(.bottom, 8)
+                       .background(Color("PrimaryRed"))
+                       .cornerRadius(20)
+               }
+                   .frame(maxWidth: .infinity, alignment: .center)
                 VStack(spacing:8){
                     Text("谶曰")
-                        .font(.fangzheng(size:24))
+                        .font(.hancheng(size:22))
                         .fontWeight(.bold)
                     ForEach(0..<item.poem.predict.count, id: \.self) { i in
                         VStack(alignment: .leading, spacing: 4) {
                             ForEach(item.poem.predict[i], id: \.self) { line in
                                 Text(line)
-                                    .font(.fangzheng(size:20))
+                                    .font(.fangzheng(size:18))
                                     .multilineTextAlignment(.leading)
                             }
                         }
@@ -184,13 +187,13 @@ struct AnnotationCardView: View {
                 }
                 VStack(spacing:8){
                     Text("颂曰")
-                        .font(.fangzheng(size:24))
+                        .font(.hancheng(size:22))
                         .fontWeight(.bold)
                     ForEach(0..<item.poem.description.count, id: \.self) { i in
                         VStack(alignment: .leading, spacing: 8) {
                             ForEach(item.poem.description[i], id: \.self) { line in
                                 Text(line)
-                                    .font(.fangzheng(size:20))
+                                    .font(.fangzheng(size:18))
                                     .multilineTextAlignment(.leading)
                                     
                             }
@@ -200,14 +203,14 @@ struct AnnotationCardView: View {
                 }
                 VStack(spacing:8){
                     Text("注解")
-                        .font(.fangzheng(size:24))
+                        .font(.hancheng(size:22))
                         .fontWeight(.bold)
                     Text(annotationText)
-                        .font(.fangzheng(size: 20))
+                        .font(.fangzheng(size: 18))
                         .lineSpacing(8)
                         .frame(alignment: .leading)
                 }
-                .padding(.horizontal, 40)
+                .padding(.horizontal, 24)
             }
         }
         .padding()
