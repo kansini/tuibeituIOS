@@ -68,74 +68,43 @@ struct HomeView: View {
                         }
                         .padding()
                     } else {
-                        GeometryReader { geometry in
-                            ZStack {
-                                ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
-                                    VStack {
-                                        // 添加状态变量用于点击反馈
-                                        @State var isPressed = false
-                                        
-                                        FlipCardView(
-                                            item: item,
-                                            annotationText: getAnnotationText(for: index),
-                                            isFlipped: flippedCardIndex == index,
-                                            onFlip: {
-                                                // 添加点击反馈效果
-                                                let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-                                                impactFeedback.impactOccurred()
-                                                
-                                                // 翻转卡片
-                                                if !isAnimating {
-                                                    isAnimating = true
-                                                    flippedCardIndex = flippedCardIndex == index ? nil : index
-                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                        isAnimating = false
-                                                    }
+                        TabView(selection: $currentIndex) {
+                            ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
+                                VStack {
+                                    // 添加状态变量用于点击反馈
+                                    @State var isPressed = false
+                                    
+                                    FlipCardView(
+                                        item: item,
+                                        annotationText: getAnnotationText(for: index),
+                                        isFlipped: flippedCardIndex == index,
+                                        onFlip: {
+                                            // 添加点击反馈效果
+                                            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                                            impactFeedback.impactOccurred()
+                                            
+                                            // 翻转卡片
+                                            if !isAnimating {
+                                                isAnimating = true
+                                                flippedCardIndex = flippedCardIndex == index ? nil : index
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                    isAnimating = false
                                                 }
                                             }
-                                        )
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                                        .padding(.horizontal, 24)
-                                    
-                                    }
-                                    .frame(width: geometry.size.width, height: geometry.size.height)
-                                    .offset(y: (CGFloat(index - currentIndex) * geometry.size.height) + dragOffset)
-                                    .clipped()
-                                }
-                            }
-                            .contentShape(Rectangle())
-                            .gesture(
-                                DragGesture()
-                                    .onChanged { gesture in
-                                        dragOffset = gesture.translation.height
-                                    }
-                                    .onEnded { gesture in
-                                        let velocity = gesture.velocity.height
-                                        let threshold = geometry.size.height / 4
-                                        
-                                        var newIndex = currentIndex
-                                        
-                                        if dragOffset < -threshold || (dragOffset < 0 && velocity < -500) {
-                                            // 向上滑动，显示下一张
-                                            newIndex = min(poemItems.count - 1, currentIndex + 1)
-                                        } else if dragOffset > threshold || (dragOffset > 0 && velocity > 500) {
-                                            // 向下滑动，显示上一张
-                                            newIndex = max(0, currentIndex - 1)
                                         }
-                                        
-                                        withAnimation {
-                                            currentIndex = newIndex
-                                        }
-                                        
-                                        dragOffset = 0
-                                    }
-                            )
-                            .onChange(of: currentIndex) { _, newValue in
-                                // 当外部改变currentIndex时，确保动画过渡
-                                withAnimation {
-                                    currentIndex = min(max(0, newValue), poemItems.count - 1)
+                                    )
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                                    .padding(.horizontal, 16)
+                                
                                 }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .tag(index)
                             }
+                        }
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                        .onChange(of: currentIndex) { _, newValue in
+                            // 当外部改变currentIndex时，确保动画过渡
+                            currentIndex = min(max(0, newValue), poemItems.count - 1)
                         }
                         .background(Color("BaseBg"))  // 设置页面背景色
                     }

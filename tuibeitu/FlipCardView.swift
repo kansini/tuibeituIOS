@@ -49,99 +49,101 @@ struct PoemCardContentView: View {
     let item: PoemItem
     
     var body: some View {
-        VStack(alignment: .trailing, spacing: 8) {
-            // 显示对应图片
-            ImageView(
-                imageName: "figure\(getNumberFromSn(item.title.sn))",
-                figureNumber: getNumberFromSn(item.title.sn)
-            )
-            .frame(height: 296)
-               
-            HStack(alignment: .top, spacing: 48) {
-                // 描述内容
-                if !item.poem.description.isEmpty {
-                    HStack(alignment: .top, spacing:16 ){
-                        ForEach(0..<item.poem.description.count, id: \.self) { i in
-                            VStack(alignment: .leading, spacing: 8) {
-                                ForEach(item.poem.description[i], id: \.self) { line in
+        ScrollView() {
+            VStack(alignment: .trailing, spacing: 8) {
+                // 显示对应图片
+                ImageView(
+                    imageName: "figure\(getNumberFromSn(item.title.sn))",
+                    figureNumber: getNumberFromSn(item.title.sn)
+                )
+                .frame(height: 296)
+                
+                HStack(alignment: .top, spacing: 48) {
+                    // 描述内容
+                    if !item.poem.description.isEmpty {
+                        HStack(alignment: .top, spacing:16 ){
+                            ForEach(0..<item.poem.description.count, id: \.self) { i in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    ForEach(item.poem.description[i], id: \.self) { line in
+                                        Text(line)
+                                            .font(.fangzheng(size:20))
+                                            .multilineTextAlignment(.leading)
+                                            .frame(width: 22)
+                                    }
+                                }
+                            }
+                            Text("颂曰")
+                                .font(.fangzheng(size:24))
+                                .fontWeight(.bold)
+                                .frame(width: 20)
+                            
+                        }
+                        
+                    }
+                    HStack(alignment: .top, spacing:8 ){
+                        // 预测内容
+                        ForEach(0..<item.poem.predict.count, id: \.self) { i in
+                            VStack(alignment: .leading, spacing: 4) {
+                                ForEach(item.poem.predict[i], id: \.self) { line in
                                     Text(line)
                                         .font(.fangzheng(size:20))
                                         .multilineTextAlignment(.leading)
-                                        .frame(width: 22)
+                                        .frame(width: 20)
                                 }
                             }
                         }
-                        Text("颂曰")
+                        Text("谶曰")
                             .font(.fangzheng(size:24))
                             .fontWeight(.bold)
-                            .frame(width: 20)
+                            .frame(width: 24)
+                    }
+                    //标题内容
+                    VStack(spacing:4){
+                        Rectangle()
+                            .fill(Color("PrimaryRed"))
+                            .frame(width: 36,height: 16)
+                        VStack(spacing:12) {
                             
-                    }
-                    
-                }
-                HStack(alignment: .top, spacing:8 ){
-                  // 预测内容
-                    ForEach(0..<item.poem.predict.count, id: \.self) { i in
-                        VStack(alignment: .leading, spacing: 4) {
-                            ForEach(item.poem.predict[i], id: \.self) { line in
-                                Text(line)
-                                    .font(.fangzheng(size:20))
-                                    .multilineTextAlignment(.leading)
-                                    .frame(width: 20)
-                            }
+                            Text("第\(item.title.sn)象")
+                                .font(.fangzheng(size:22))
+                                .fontWeight(.bold)
+                                .frame(width: 20)
+                                .foregroundColor(.white)
+                            
+                            Text(item.title.ganZhi)
+                                .font(.fangzheng(size:22))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .frame(width: 20)
+                            
+                            Text(item.title.hexagrams1)
+                                .font(.fangzheng(size:22))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .frame(width: 20)
+                            
+                            Text(item.title.hexagrams2)
+                                .font(.fangzheng(size:22))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .frame(width: 20)
+                            
                         }
-                    }
-                    Text("谶曰")
-                        .font(.fangzheng(size:24))
-                        .fontWeight(.bold)
-                        .frame(width: 24)
-                }
-                //标题内容
-                VStack(spacing:4){
-                    Rectangle()
-                        .fill(Color("PrimaryRed"))
-                        .frame(width: 36,height: 16)
-                    VStack(spacing:16) {
-                        
-                        Text("第\(item.title.sn)象")
-                            .font(.fangzheng(size:22))
-                            .fontWeight(.bold)
-                            .frame(width: 20)
-                            .foregroundColor(.white)
-                       
-                        Text(item.title.ganZhi)
-                            .font(.fangzheng(size:22))
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .frame(width: 20)
-                       
-                        Text(item.title.hexagrams1)
-                            .font(.fangzheng(size:22))
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .frame(width: 20)
-                       
-                        Text(item.title.hexagrams2)
-                            .font(.fangzheng(size:22))
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .frame(width: 20)
+                        .padding(.vertical,12)
+                        .padding(.horizontal,8)
+                        .background(Color("PrimaryRed"))
+                        Rectangle()
+                            .fill(Color("PrimaryRed"))
+                            .frame(width: 36,height: 8)
                         
                     }
-                    .padding(.vertical,16)
-                    .padding(.horizontal,8)
-                    .background(Color("PrimaryRed"))
-                    Rectangle()
-                        .fill(Color("PrimaryRed"))
-                        .frame(width: 36,height: 8)
+                    
+                    
                     
                 }
-                
-                
-               
+                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
             }
-            .padding(.vertical, 8)
-            .padding(.horizontal, 16)
         }
     }
 }
@@ -152,28 +154,25 @@ struct AnnotationCardView: View {
     let sn: String
     
     var body: some View {
-        VStack { // 使用VStack确保高度一致
-           ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    ZStack{
-                        Text("第\(sn)象")
-                            .font(.fangzheng(size: 20))
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal,16)
-                            .padding(.top, 4)
-                            .padding(.bottom, 8)
-                            .background(Color("PrimaryRed"))
-                            .cornerRadius(8)
-                    }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                    Text(annotationText)
-                        .font(.fangzheng(size: 18))
-                        .lineSpacing(8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding()
+        ScrollView() {
+            ZStack{
+                Text("第\(sn)象")
+                    .font(.fangzheng(size: 20))
+                    .foregroundColor(Color.white)
+                    .padding(.horizontal,16)
+                    .padding(.top, 4)
+                    .padding(.bottom, 8)
+                    .background(Color("PrimaryRed"))
+                    .cornerRadius(8)
             }
+                .frame(maxWidth: .infinity, alignment: .center)
+            Text(annotationText)
+                .font(.fangzheng(size: 18))
+                .lineSpacing(8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+//            Spacer() // 添加Spacer以保持一致的高度
         }
+        .padding()
     }
 }
 

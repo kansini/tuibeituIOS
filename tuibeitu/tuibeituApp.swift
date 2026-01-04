@@ -32,6 +32,7 @@ struct tuibeituApp: App {
 
 struct MainTabView: View {
     @State private var showContextView = false
+    @State private var showInfoView = false
     @State private var navigationPath = NavigationPath()
     @State private var homeViewCurrentIndex = 0
     
@@ -42,6 +43,9 @@ struct MainTabView: View {
                 
                 VStack {
                     TopButtons(
+                        onInfoButtonTapped: {
+                            showInfoView = true
+                        },
                         onContextButtonTapped: {
                             showContextView = true
                         },
@@ -67,6 +71,9 @@ struct MainTabView: View {
                     showContextView = false
                 })
             }
+            .sheet(isPresented: $showInfoView) {
+                InfoView()
+            }
         }
     }
     struct TopButtons: View{
@@ -87,8 +94,8 @@ struct MainTabView: View {
             
             return nil
         }
+        var onInfoButtonTapped: () -> Void = {}
         var onContextButtonTapped: () -> Void = {}
-        
         var onSettingsButtonTapped: () -> Void = {}
         
         var body: some View{
@@ -96,6 +103,16 @@ struct MainTabView: View {
                 Spacer() // 推动按钮到右上角
                 
                 HStack {
+                    Button(action: {
+                        onInfoButtonTapped()
+                    }) {
+                        Image(uiImage: loadImageFromResources(named: "info") ?? UIImage(systemName: "info")!)
+                            .resizable()
+                            .frame(width: 18, height: 18)
+                            .foregroundColor(.primary)
+                    }
+                    .frame(width: 28, height: 28)
+                    
                     Button(action: {
                         onContextButtonTapped()
                     }) {
@@ -115,6 +132,7 @@ struct MainTabView: View {
                             .foregroundColor(.primary)
                     }
                     .frame(width: 28, height: 28)
+                    
                 }
                 .padding(.trailing, 15)
                 .padding(.top, 10)
