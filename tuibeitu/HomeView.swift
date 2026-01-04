@@ -21,6 +21,8 @@ struct HomeView: View {
     @State private var selectedAnnotationText = ""
     @State private var selectedSnText = ""
     @State private var annotationDataLoaded = false
+    @State private var flippedCardIndex: Int? = nil
+    @State private var isAnimating = false
     
     init(currentIndex: Binding<Int> = .constant(0)) {
         self._currentIndex = currentIndex
@@ -73,80 +75,38 @@ struct HomeView: View {
                                         // 添加状态变量用于点击反馈
                                         @State var isPressed = false
                                         
-                                        PoemCardView(item: item)
-                                            .padding(.horizontal, 16)
-                                            .scaleEffect(showingAnnotation ? 0.98 : 1.0)
-                                            .blur(radius: showingAnnotation ? 8 : 0)
-                                            .animation(.easeInOut(duration: 0.2), value: showingAnnotation)
-                                            .onTapGesture {
+                                        FlipCardView(
+                                            item: item,
+                                            annotationText: getAnnotationText(for: index),
+                                            isFlipped: flippedCardIndex == index,
+                                            onFlip: {
                                                 // 添加点击反馈效果
                                                 let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                                                 impactFeedback.impactOccurred()
                                                 
-                                                // 触发缩放动画
-                                                withAnimation {
-                                                    isPressed = true
-                                                }
-                                                
-                                                // 延迟恢复原始大小
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                                    withAnimation {
-                                                        isPressed = false
-                                                    }
-                                                }
-                                                
-                                                // 获取注解数据并显示对应的注解
-                                                if annotationDataLoaded && annotationItems.indices.contains(index) {
-                                                    selectedAnnotationText = annotationItems[index]
-                                                    selectedSnText = item.title.sn
-                                                    selectedAnnotationIndex = index
-                                                    showingAnnotation = true
-                                                } else {
-                                                    // 如果注解数据还未加载，先加载注解数据
-                                                    if !annotationDataLoaded {
-                                                        PoemDataLoader.loadAnnotationData { result in
-                                                            switch result {
-                                                            case .success(let annotations):
-                                                                DispatchQueue.main.async {
-                                                                    annotationItems = annotations
-                                                                    annotationDataLoaded = true
-                                                                    if annotations.indices.contains(index) {
-                                                                        selectedAnnotationText = annotations[index]
-                                                                        selectedAnnotationIndex = index
-                                                                        showingAnnotation = true
-                                                                    }
-                                                                }
-                                                            case .failure(let error):
-                                                                print("加载注解数据失败: \(error)")
-                                                                // 如果注解加载失败，可以考虑显示一个错误信息或默认文本
-                                                                selectedAnnotationText = "注解数据加载失败"
-                                                                selectedAnnotationIndex = index
-                                                                showingAnnotation = true
-                                                            }
-                                                        }
-                                                    } else {
-                                                        // 注解数据已加载但当前索引没有数据
-                                                        if annotationItems.indices.contains(index) {
-                                                            selectedAnnotationText = annotationItems[index]
-                                                            selectedAnnotationIndex = index
-                                                            showingAnnotation = true
-                                                        } else {
-                                                            selectedAnnotationText = "未找到对应注解"
-                                                            showingAnnotation = true
-                                                        }
+                                                // 翻转卡片
+                                                if !isAnimating {
+                                                    isAnimating = true
+                                                    flippedCardIndex = flippedCardIndex == index ? nil : index
+                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                        isAnimating = false
                                                     }
                                                 }
                                             }
+                                        )
+                                        .padding()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.systemBackground))
+                                        .cornerRadius(12)
+                                        .shadow(color: Color(hex: "#08000000"), radius: 16, x: 8, y: 8)
+                                        .padding(.horizontal, 16)
+                                        .scaleEffect(showingAnnotation ? 0.98 : 1.0)
+                                        .blur(radius: showingAnnotation ? 8 : 0)
+                                        .animation(.easeInOut(duration: 0.2), value: showingAnnotation)
                                     }
                                     .frame(width: geometry.size.width, height: geometry.size.height)
                                     .offset(y: (CGFloat(index - currentIndex) * geometry.size.height) + dragOffset)
                                     .clipped()
-                                }
-                                .sheet(isPresented: $showingAnnotation) {
-                                    AnnotationView(
-                                        annotationText: selectedAnnotationText,
-                                        sn: selectedSnText
-                                    )
                                 }
                             }
                             .contentShape(Rectangle())
@@ -238,6 +198,14 @@ struct HomeView: View {
                     self.isLoading = false
                 }
             }
+        }
+    }
+    
+    private func getAnnotationText(for index: Int) -> String {
+        if annotationDataLoaded && annotationItems.indices.contains(index) {
+            return annotationItems[index]
+        } else {
+            return "注解数据加载中..."
         }
     }
 }
