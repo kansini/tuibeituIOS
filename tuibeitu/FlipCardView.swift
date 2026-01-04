@@ -19,16 +19,16 @@ struct FlipCardView: View {
             // 卡片背面 - 注解内容
             if isFlipped {
                 AnnotationCardView(annotationText: annotationText, sn: item.title.sn)
-                    .background(Color(.systemBackground)) // 确保背面背景色与正面一致
-                    .opacity(0.99) // 确保背面在翻转时正确显示
+                    .background(Color("LightBg"))
+                    .opacity(0.85)
                     .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
             }
             
             // 卡片正面 - 诗词内容
             if !isFlipped {
                 PoemCardContentView(item: item)
-                    .background(Color(.systemBackground)) // 确保正面背景色一致
-                    .opacity(0.85) // 确保正面在翻转时正确显示
+                    .background(Color(.systemBackground))
+                    .opacity(0.85)
             }
         }
         .rotation3DEffect(
@@ -39,8 +39,8 @@ struct FlipCardView: View {
             onFlip()
         }
             .cornerRadius(12)
-           .shadow(color: Color(hex: "#08000000"), radius: 16, x: 8, y: 8)
-        .animation(.easeInOut(duration: 0.6), value: isFlipped) // 添加动画效果
+            .shadow(color: Color(hex: "#0F000000"), radius: 16, x: 8, y: 8)
+            .animation(.easeInOut(duration: 0.6), value: isFlipped) // 添加动画效果
     }
 }
 
@@ -56,10 +56,6 @@ struct PoemCardContentView: View {
                 figureNumber: getNumberFromSn(item.title.sn)
             )
             .frame(height: 296)
-//            .clipped()
-//            .padding(.horizontal, -16) // 扩展到边缘
-//            .padding(.top, -16) // 与顶部对齐，移除负值
-//            .padding(.vertical, 16) // 添加上下padding 16
                
             HStack(alignment: .top, spacing: 48) {
                 // 描述内容
@@ -144,7 +140,6 @@ struct PoemCardContentView: View {
                 
                
             }
-//            .background(Color("CardBg"))
             .padding(.vertical, 8)
             .padding(.horizontal, 16)
         }
@@ -160,22 +155,25 @@ struct AnnotationCardView: View {
         VStack { // 使用VStack确保高度一致
            ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("第\(sn)象")
-                        .font(.fangzheng(size: 22))
+                    ZStack{
+                        Text("第\(sn)象")
+                            .font(.fangzheng(size: 20))
+                            .foregroundColor(Color.white)
+                            .padding(.horizontal,16)
+                            .padding(.top, 4)
+                            .padding(.bottom, 8)
+                            .background(Color("PrimaryRed"))
+                            .cornerRadius(8)
+                    }
                         .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.vertical, 8)
                     Text(annotationText)
                         .font(.fangzheng(size: 18))
-                        .lineSpacing(6)
+                        .lineSpacing(8)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding()
             }
-//            .padding(.top, 8) // 添加一些间距
-            
-//            Spacer() // 确保内容填满空间
         }
-//        .background(Color("LightBg"))
     }
 }
 
@@ -247,22 +245,22 @@ private func getNumberFromSn(_ sn: String) -> Int {
     return numberMap[sn] ?? 1
 }
 
-struct FlipCardView_Previews: PreviewProvider {
-    static var previews: some View {
-        let sampleItem = PoemItem(
-            title: Title(sn: "一", ganZhi: "甲子", hexagrams1: "乾", hexagrams2: "坤"),
-            poem: Poem(
-                predict: [["谶曰", "此象主", "国家"]],
-                description: [["颂曰", "此象主", "国家"]]
-            )
-        )
-        
-        FlipCardView(
-            item: sampleItem,
-            annotationText: "这是注解内容，用于解释诗词的含义。这是注解内容，用于解释诗词的含义。",
-            isFlipped: false,
-            onFlip: {}
-        )
-        .previewInterfaceOrientation(.portrait)
-    }
-}
+//struct FlipCardView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        let sampleItem = PoemItem(
+//            title: Title(sn: "一", ganZhi: "甲子", hexagrams1: "乾", hexagrams2: "坤"),
+//            poem: Poem(
+//                predict: [["谶曰", "此象主", "国家"]],
+//                description: [["颂曰", "此象主", "国家"]]
+//            )
+//        )
+//        
+//        FlipCardView(
+//            item: sampleItem,
+//            annotationText: "这是注解内容，用于解释诗词的含义。这是注解内容，用于解释诗词的含义。",
+//            isFlipped: false,
+//            onFlip: {}
+//        )
+//        .previewInterfaceOrientation(.portrait)
+//    }
+//}
