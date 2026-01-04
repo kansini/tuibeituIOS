@@ -22,6 +22,7 @@ struct InfoView: View {
                    Button(action:{dismiss()}) {
                        Image(systemName: "xmark")
                           .foregroundColor(.primary)
+                          .font(.title2)
                          }
                     }
                .padding(.top, 40)
@@ -36,10 +37,11 @@ struct InfoView: View {
             }
             .padding()
             .ignoresSafeArea()
+            .background(Color("LightBg"))
 
            }
+        }
     }
-}
 #Preview {
     InfoView()
 }

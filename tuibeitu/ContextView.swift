@@ -30,6 +30,7 @@ struct ContextView: View {
                 Button(action:{dismiss()}) {
                     Image(systemName: "xmark")
                        .foregroundColor(.primary)
+                       .font(.title2)
                       }
                  }
             .padding(.bottom, 8)
