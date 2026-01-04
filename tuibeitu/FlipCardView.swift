@@ -18,9 +18,9 @@ struct FlipCardView: View {
         ZStack {
             // 卡片背面 - 注解内容
             if isFlipped {
-                AnnotationCardView(annotationText: annotationText, sn: item.title.sn)
+                AnnotationCardView(annotationText: annotationText, sn: item.title.sn, item: item)
                     .background(Color("LightBg"))
-                    .opacity(0.85)
+//                    .opacity(0.85)
                     .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
             }
             
@@ -28,7 +28,7 @@ struct FlipCardView: View {
             if !isFlipped {
                 PoemCardContentView(item: item)
                     .background(Color(.systemBackground))
-                    .opacity(0.85)
+//                    .opacity(0.85)
             }
         }
         .rotation3DEffect(
@@ -40,7 +40,7 @@ struct FlipCardView: View {
         }
             .cornerRadius(12)
             .shadow(color: Color(hex: "#0F000000"), radius: 16, x: 8, y: 8)
-            .animation(.easeInOut(duration: 0.6), value: isFlipped) // 添加动画效果
+            .animation(.easeInOut(duration: 0.3), value: isFlipped) // 添加动画效果
     }
 }
 
@@ -152,6 +152,7 @@ struct PoemCardContentView: View {
 struct AnnotationCardView: View {
     let annotationText: String
     let sn: String
+    let item: PoemItem
     
     var body: some View {
         ScrollView() {
@@ -163,14 +164,51 @@ struct AnnotationCardView: View {
                     .padding(.top, 4)
                     .padding(.bottom, 8)
                     .background(Color("PrimaryRed"))
-                    .cornerRadius(8)
+                    .cornerRadius(20)
             }
                 .frame(maxWidth: .infinity, alignment: .center)
-            Text(annotationText)
-                .font(.fangzheng(size: 18))
-                .lineSpacing(8)
-                .frame(maxWidth: .infinity, alignment: .leading)
-//            Spacer() // 添加Spacer以保持一致的高度
+            VStack(spacing:16){
+                VStack(spacing:8){
+                    Text("谶曰")
+                        .font(.fangzheng(size:24))
+                        .fontWeight(.bold)
+                    ForEach(0..<item.poem.predict.count, id: \.self) { i in
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(item.poem.predict[i], id: \.self) { line in
+                                Text(line)
+                                    .font(.fangzheng(size:20))
+                                    .multilineTextAlignment(.leading)
+                            }
+                        }
+                    }
+                }
+                VStack(spacing:8){
+                    Text("颂曰")
+                        .font(.fangzheng(size:24))
+                        .fontWeight(.bold)
+                    ForEach(0..<item.poem.description.count, id: \.self) { i in
+                        VStack(alignment: .leading, spacing: 8) {
+                            ForEach(item.poem.description[i], id: \.self) { line in
+                                Text(line)
+                                    .font(.fangzheng(size:20))
+                                    .multilineTextAlignment(.leading)
+                                    
+                            }
+                        }
+                    }
+                    
+                }
+                VStack(spacing:8){
+                    Text("注解")
+                        .font(.fangzheng(size:24))
+                        .fontWeight(.bold)
+                    Text(annotationText)
+                        .font(.fangzheng(size: 20))
+                        .lineSpacing(8)
+                        .frame(alignment: .leading)
+                }
+                .padding(.horizontal, 40)
+            }
         }
         .padding()
     }
