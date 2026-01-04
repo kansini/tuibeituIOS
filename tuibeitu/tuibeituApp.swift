@@ -65,13 +65,16 @@ struct MainTabView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showContextView) {
-                ContextView(currentIndex: $homeViewCurrentIndex, closeAction: { index in
+            .fullScreenCover(isPresented: $showContextView) {
+                ContextView(
+                currentIndex: $homeViewCurrentIndex,
+                 closeAction: { index in
                     homeViewCurrentIndex = index
                     showContextView = false
-                })
+                 })
             }
-            .sheet(isPresented: $showInfoView) {
+
+            .fullScreenCover(isPresented: $showInfoView) {
                 InfoView()
             }
         }

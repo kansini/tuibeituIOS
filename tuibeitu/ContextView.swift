@@ -21,9 +21,20 @@ struct ContextView: View {
     }
     
     var body: some View {
-        NavigationView{
+        VStack{
+            HStack{
+                Spacer()
+                Text("目录")
+                    .font(.fangzheng(size: 24))
+                Spacer()
+                Button(action:{dismiss()}) {
+                    Image(systemName: "xmark")
+                       .foregroundColor(.primary)
+                      }
+                 }
+            .padding(.bottom, 8)
             ScrollView {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 8), spacing: 8) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 8), spacing: 12) {
                     ForEach(Array(poemItems.enumerated()), id: \.offset) { index, item in
                         ContextItem(item: item, index: index, currentIndex: currentIndex, onButtonClick: { clickedIndex in
                             closeAction?(clickedIndex)
@@ -31,21 +42,8 @@ struct ContextView: View {
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text("目录")
-                            .font(.fangzheng(size: 24, fontWeight: .bold))
-                            }
-                        }
-            .navigationBarItems(leading: Button(action:{dismiss()}) {
-                Image(systemName: "xmark")
-                   .foregroundColor(.primary)
-                   .frame(width: 16, height: 16)
-            }
-            .frame(width: 24, height: 24)
-            .cornerRadius(40))
         }
+        .padding(.horizontal, 16)
         .background(Color("LightBg"))
         .onAppear {
             loadPoemData()
@@ -82,7 +80,7 @@ struct ContextItem: View{
         Button(action: {
             onButtonClick(index)
         }){
-            Text("第\(item.title.sn)象")
+            Text( index == 9 ? "第\(item.title.sn)〇象" : index > 8 ? "第\(item.title.sn)象" : "第〇\(item.title.sn)象")
                 .font(.fangzheng(size:13))
                 .frame(width: 13)
                 .foregroundColor(currentIndex == index ? .white : .black)

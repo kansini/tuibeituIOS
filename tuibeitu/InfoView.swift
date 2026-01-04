@@ -13,25 +13,33 @@ struct InfoView: View {
     @Environment(\.dismiss) var dismiss
     var body: some View {
         NavigationView{
-           ScrollView{
-               Text(infotext)
-                    .font(.fangzheng(size: 20))
-                    .lineSpacing(12)
+           VStack{
+               HStack{
+                   Spacer()
+                   Text("简介")
+                       .font(.fangzheng(size: 24))
+                   Spacer()
+                   Button(action:{dismiss()}) {
+                       Image(systemName: "xmark")
+                          .foregroundColor(.primary)
+                         }
+                    }
+               .padding(.top, 40)
+               .padding(.bottom, 8)
+               
+               ScrollView{
+                   Text(infotext)
+                        .font(.fangzheng(size: 18))
+                        .lineSpacing(12)
+               }
+               
             }
             .padding()
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                        Text("简介")
-                            .font(.fangzheng(size: 24))
-                            }
-                        }
-            .navigationBarItems(leading: Button(action:{dismiss()}) {
-                Image(systemName: "xmark")
-                   .foregroundColor(.primary)
-                   .frame(width: 16, height: 16)
-            }
-            .frame(width: 24, height: 24)
-            .cornerRadius(40))
-        }
+            .ignoresSafeArea()
+
+           }
     }
+}
+#Preview {
+    InfoView()
 }
