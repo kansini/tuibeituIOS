@@ -88,6 +88,7 @@ struct MainTabView: View {
             return nil
         }
         var onContextButtonTapped: () -> Void = {}
+        
         var onSettingsButtonTapped: () -> Void = {}
         
         var body: some View{

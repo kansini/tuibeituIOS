@@ -19,15 +19,16 @@ struct FlipCardView: View {
             // 卡片背面 - 注解内容
             if isFlipped {
                 AnnotationCardView(annotationText: annotationText, sn: item.title.sn)
+                    .background(Color(.systemBackground)) // 确保背面背景色与正面一致
+                    .opacity(0.99) // 确保背面在翻转时正确显示
                     .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
             }
             
             // 卡片正面 - 诗词内容
             if !isFlipped {
                 PoemCardContentView(item: item)
-                    .onTapGesture {
-                        onFlip()
-                    }
+                    .background(Color(.systemBackground)) // 确保正面背景色一致
+                    .opacity(0.85) // 确保正面在翻转时正确显示
             }
         }
         .rotation3DEffect(
@@ -37,6 +38,9 @@ struct FlipCardView: View {
         .onTapGesture {
             onFlip()
         }
+            .cornerRadius(12)
+           .shadow(color: Color(hex: "#08000000"), radius: 16, x: 8, y: 8)
+        .animation(.easeInOut(duration: 0.6), value: isFlipped) // 添加动画效果
     }
 }
 
@@ -51,10 +55,10 @@ struct PoemCardContentView: View {
                 imageName: "figure\(getNumberFromSn(item.title.sn))",
                 figureNumber: getNumberFromSn(item.title.sn)
             )
-            .frame(height: 280)
-            .clipped()
-            .padding(.horizontal, -16) // 扩展到边缘
-            .padding(.top, -16) // 与顶部对齐，移除负值
+            .frame(height: 296)
+//            .clipped()
+//            .padding(.horizontal, -16) // 扩展到边缘
+//            .padding(.top, -16) // 与顶部对齐，移除负值
 //            .padding(.vertical, 16) // 添加上下padding 16
                
             HStack(alignment: .top, spacing: 48) {
@@ -128,10 +132,8 @@ struct PoemCardContentView: View {
                             .frame(width: 20)
                         
                     }
-                    .padding(.top,16)
-                    .padding(.bottom,16)
-                    .padding(.leading,8)
-                    .padding(.trailing,8)
+                    .padding(.vertical,16)
+                    .padding(.horizontal,8)
                     .background(Color("PrimaryRed"))
                     Rectangle()
                         .fill(Color("PrimaryRed"))
@@ -142,7 +144,9 @@ struct PoemCardContentView: View {
                 
                
             }
-            .padding(.top, 8)
+//            .background(Color("CardBg"))
+            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
         }
     }
 }
@@ -153,19 +157,25 @@ struct AnnotationCardView: View {
     let sn: String
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("第\(sn)象")
-                    .font(.fangzheng(size: 22))
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical, 8)
-                Text(annotationText)
-                    .font(.fangzheng(size: 18))
-                    .lineSpacing(6)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        VStack { // 使用VStack确保高度一致
+           ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("第\(sn)象")
+                        .font(.fangzheng(size: 22))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 8)
+                    Text(annotationText)
+                        .font(.fangzheng(size: 18))
+                        .lineSpacing(6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding()
             }
-            .padding()
+//            .padding(.top, 8) // 添加一些间距
+            
+//            Spacer() // 确保内容填满空间
         }
+//        .background(Color("LightBg"))
     }
 }
 

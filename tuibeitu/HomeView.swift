@@ -94,15 +94,9 @@ struct HomeView: View {
                                                 }
                                             }
                                         )
-                                        .padding()
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .background(Color(.systemBackground))
-                                        .cornerRadius(12)
-                                        .shadow(color: Color(hex: "#08000000"), radius: 16, x: 8, y: 8)
-                                        .padding(.horizontal, 16)
-                                        .scaleEffect(showingAnnotation ? 0.98 : 1.0)
-                                        .blur(radius: showingAnnotation ? 8 : 0)
-                                        .animation(.easeInOut(duration: 0.2), value: showingAnnotation)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                                        .padding(.horizontal, 24)
+                                    
                                     }
                                     .frame(width: geometry.size.width, height: geometry.size.height)
                                     .offset(y: (CGFloat(index - currentIndex) * geometry.size.height) + dragOffset)
