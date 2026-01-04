@@ -2,11 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch Screen.storyboard</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>zhuquefangsong.ttf</string>
 		<string>fangZhengFangSong.ttf</string>
-		<string>hancheng.ttf</string>
 	</array>
 </dict>
 </plist>
